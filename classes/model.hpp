@@ -1,53 +1,44 @@
-#ifndef MODEL_HPP
-#define MODEL_HPP
+#ifndef OBJECT_HPP
+#define OBJECT_HPP
 
 #include <GL/glew.h>
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_opengl.h"
 
-#include "../helpers/globals.h"
-
 #include <vector>
 
 class Model {
     private:
-        int _vertexCount;
-
+        size_t _vertexCount;
         std::vector<float> _vertexData;
-        unsigned int _textureHandle;
+        unsigned int _textureHandle = -1;
+        const size_t _stride = 8;
 
     public:
-        float scale[3] = {1, 1, 1};
         float pos[3] = {0, 0, 0};
-        float rotation[3] = {0, 0, 0};
-        const unsigned short stride = 8;
 
-        int getVertexCount() {
+        size_t getVertexCount() {
             return _vertexCount;
-        }
-
-        void setVertexData(std::vector<float> vertexData) {
-            _vertexData = vertexData;
-            _vertexCount = vertexData.size() / stride;
         }
 
         void setTextureHandle(unsigned int textureHandle) {
             _textureHandle = textureHandle;
         }
 
+        void setVertexData(std::vector<float> vertexData) {
+            _vertexData = vertexData;
+            _vertexCount = vertexData.size() / _stride;
+        }
+
         void draw() {
             glPushMatrix();
 
             glTranslatef(pos[0], pos[1], pos[2]);
-            glRotated(rotation[0], 1, 0, 0);
-            glRotated(rotation[1], 0, 1, 0);
-            glRotated(rotation[1], 0, 0, 1);
-            glScaled(scale[0], scale[1], scale[2]);
 
             glBindTexture(GL_TEXTURE_2D, gTextures[_textureHandle]);
 
             glBegin(GL_TRIANGLES);
-            for (size_t i = 0; i < _vertexData.size(); i += stride) {
+            for (size_t i = 0; i < _vertexData.size(); i += _stride) {
                 glTexCoord2f(_vertexData[i + 3], _vertexData[i + 4]);
                 glNormal3f(_vertexData[i + 5], _vertexData[i + 6], _vertexData[i + 7]);
                 glVertex3f(_vertexData[i], _vertexData[i + 1], _vertexData[i + 2]);

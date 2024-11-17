@@ -9,6 +9,4 @@ extern bool gShouldExit;
 extern const unsigned short gNumTextures;
 extern unsigned int gTextures[];
 
-extern double gTranslate;
-
 #endif

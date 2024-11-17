@@ -99,12 +99,6 @@ void processEvents() {
 	}
 
 	const Uint8* keyboardState = SDL_GetKeyboardState(nullptr);
-	if (keyboardState[SDL_SCANCODE_UP]) {
-		gTranslate -= 0.02;
-	}
-	if (keyboardState[SDL_SCANCODE_DOWN]) {
-		gTranslate += 0.02;
-	}
 	if (keyboardState[SDL_SCANCODE_ESCAPE]) {
 		gShouldExit = true;
 	}
