@@ -33,7 +33,7 @@ bool gShouldExit = false;
 SDL_GLContext gCtx = nullptr;
 const unsigned short gNumTextures = 3;
 unsigned int gTextures[gNumTextures];
-Camera gCamera(0, 7, 12);
+Camera gCamera(0, 7.5, 9);
 
 //
 // UPDATE AND DRAW SCENE

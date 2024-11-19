@@ -45,19 +45,37 @@ class Piano : public Object {
             for (size_t i = 0; i < keyCount; i++) {
                 if (pianoLayout.at(i).find('#') != std::string::npos) {
                     //create a black key
-                    Model* newKey = ModelFactory::fromAnchoredCuboid(keyWidth, keyHeight, keyDepth);
+                    Model* newKey = ModelFactory::fromBlackKey(keyWidth, keyHeight, keyDepth - 0.15f, 0.15f);
                     newKey->setTextureHandle(gTextureHandles::BLACK_KEY);
 
                     newKey->pos[0] = -(keyboardWidth * 0.5f) + (i * keyWidth);
-                    newKey->pos[1] = 3.0f;
+                    newKey->pos[1] = 3.08f;
                     newKey->pos[2] = 0.0f;
                     _keys.push_back(newKey);
                 } else {
                     //create a white key
-                    Model* newKey = ModelFactory::fromAnchoredCuboid(keyWidth, keyHeight, keyDepth);
+
+                    //find all of the neighboring black keys
+                    std::vector<int> neighboringBlackKeys;
+                    if (i != 0 && pianoLayout.at(i-1).find('#') != std::string::npos)
+                        neighboringBlackKeys.push_back(-1);
+                    if (i + 1 < pianoLayout.size() && pianoLayout.at(i+1).find('#') != std::string::npos)
+                        neighboringBlackKeys.push_back(1);
+
+                    //increase the width based on how many neighboring black keys there are
+                    float width = keyWidth;
+                    width += (keyWidth * 0.5f * neighboringBlackKeys.size());
+
+                    //change the position if this white key is responsible for covering half of a black key to it's left
+                    float x = -(keyboardWidth * 0.5f) + (i * keyWidth);
+                    if (neighboringBlackKeys.size() > 0 && neighboringBlackKeys.at(0) == -1) {
+                        x -= keyWidth * 0.5f;
+                    } 
+
+                    Model* newKey = ModelFactory::fromAnchoredCuboid(width, keyHeight, keyDepth);
                     newKey->setTextureHandle(gTextureHandles::WHITE_KEY);
 
-                    newKey->pos[0] = -(keyboardWidth * 0.5f) + (i * keyWidth);
+                    newKey->pos[0] = x;
                     newKey->pos[1] = 3.0f;
                     newKey->pos[2] = 0.0f;
                     _keys.push_back(newKey);
