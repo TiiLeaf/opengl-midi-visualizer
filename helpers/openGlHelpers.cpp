@@ -25,7 +25,7 @@ void setProjection(float aspectRatio) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    gluPerspective(66, aspectRatio, 0.1, 100);
+    gluPerspective(60, aspectRatio, 0.1, 100);
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
