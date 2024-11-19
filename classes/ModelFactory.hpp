@@ -111,6 +111,110 @@ public:
         newModel->setVertexData(vertices);
         return newModel;
     }
+
+    static Model* fromCenteredCuboid(float w, float h, float d) {
+        float sx = w / 2;
+        float sy = h / 2;
+        float sz = d / 2;
+
+        std::vector<float> cuboidVertexData = {
+             sx,  sy, -sz, 1.0f, 1.0f,  0.0f,  0.0f, -1.0f,
+             sx, -sy, -sz, 1.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+            -sx, -sy, -sz, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+            -sx, -sy, -sz, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+            -sx,  sy, -sz, 0.0f, 1.0f,  0.0f,  0.0f, -1.0f,
+             sx,  sy, -sz, 1.0f, 1.0f,  0.0f,  0.0f, -1.0f,
+
+            -sx, -sy,  sz, 0.0f, 0.0f,  0.0f,  0.0f,  1.0f,
+             sx, -sy,  sz, 1.0f, 0.0f,  0.0f,  0.0f,  1.0f,
+             sx,  sy,  sz, 1.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+             sx,  sy,  sz, 1.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+            -sx,  sy,  sz, 0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+            -sx, -sy,  sz, 0.0f, 0.0f,  0.0f,  0.0f,  1.0f,
+
+            -sx,  sy,  sz, 1.0f, 1.0f, -1.0f,  0.0f,  0.0f,
+            -sx,  sy, -sz, 1.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+            -sx, -sy, -sz, 0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+            -sx, -sy, -sz, 0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+            -sx, -sy,  sz, 0.0f, 1.0f, -1.0f,  0.0f,  0.0f,
+            -sx,  sy,  sz, 1.0f, 1.0f, -1.0f,  0.0f,  0.0f,
+
+             sx, -sy, -sz, 0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+             sx,  sy, -sz, 1.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+             sx,  sy,  sz, 1.0f, 1.0f,  1.0f,  0.0f,  0.0f,
+             sx,  sy,  sz, 1.0f, 1.0f,  1.0f,  0.0f,  0.0f,
+             sx, -sy,  sz, 0.0f, 1.0f,  1.0f,  0.0f,  0.0f,
+             sx, -sy, -sz, 0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+
+            -sx, -sy, -sz, 0.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+             sx, -sy, -sz, 1.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+             sx, -sy,  sz, 1.0f, 1.0f,  0.0f, -1.0f,  0.0f,
+             sx, -sy,  sz, 1.0f, 1.0f,  0.0f, -1.0f,  0.0f,
+            -sx, -sy,  sz, 0.0f, 1.0f,  0.0f, -1.0f,  0.0f,
+            -sx, -sy, -sz, 0.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+
+             sx,  sy,  sz, 1.0f, 1.0f,  0.0f,  1.0f,  0.0f,
+             sx,  sy, -sz, 1.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+            -sx,  sy, -sz, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+            -sx,  sy, -sz, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+            -sx,  sy,  sz, 0.0f, 1.0f,  0.0f,  1.0f,  0.0f,
+             sx,  sy,  sz, 1.0f, 1.0f,  0.0f,  1.0f,  0.0f
+        };
+
+        Model* newModel = new Model;
+        newModel->setVertexData(cuboidVertexData);
+        return newModel;
+    }
+
+    static Model* fromAnchoredCuboid(float w, float h, float d) {
+        std::vector<float> cuboidVertexData = {
+            w, h, 0, 1.0f, 1.0f,  0.0f,  0.0f, -1.0f,
+            w, 0, 0, 1.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+            0, 0, 0, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+            0, 0, 0, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+            0, h, 0, 0.0f, 1.0f,  0.0f,  0.0f, -1.0f,
+            w, h, 0, 1.0f, 1.0f,  0.0f,  0.0f, -1.0f,
+
+            0, 0, d, 0.0f, 0.0f,  0.0f,  0.0f,  1.0f,
+            w, 0, d, 1.0f, 0.0f,  0.0f,  0.0f,  1.0f,
+            w, h, d, 1.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+            w, h, d, 1.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+            0, h, d, 0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+            0, 0, d, 0.0f, 0.0f,  0.0f,  0.0f,  1.0f,
+
+            0, h, d, 1.0f, 1.0f, -1.0f,  0.0f,  0.0f,
+            0, h, 0, 1.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+            0, 0, 0, 0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+            0, 0, 0, 0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+            0, 0, d, 0.0f, 1.0f, -1.0f,  0.0f,  0.0f,
+            0, h, d, 1.0f, 1.0f, -1.0f,  0.0f,  0.0f,
+
+            w, 0, 0, 0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+            w, h, 0, 1.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+            w, h, d, 1.0f, 1.0f,  1.0f,  0.0f,  0.0f,
+            w, h, d, 1.0f, 1.0f,  1.0f,  0.0f,  0.0f,
+            w, 0, d, 0.0f, 1.0f,  1.0f,  0.0f,  0.0f,
+            w, 0, 0, 0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+
+            0, 0, 0, 0.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+            w, 0, 0, 1.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+            w, 0, d, 1.0f, 1.0f,  0.0f, -1.0f,  0.0f,
+            w, 0, d, 1.0f, 1.0f,  0.0f, -1.0f,  0.0f,
+            0, 0, d, 0.0f, 1.0f,  0.0f, -1.0f,  0.0f,
+            0, 0, 0, 0.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+
+            w, h, d, 1.0f, 1.0f,  0.0f,  1.0f,  0.0f,
+            w, h, 0, 1.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+            0, h, 0, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+            0, h, 0, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+            0, h, d, 0.0f, 1.0f,  0.0f,  1.0f,  0.0f,
+            w, h, d, 1.0f, 1.0f,  0.0f,  1.0f,  0.0f
+        };
+
+        Model* newModel = new Model;
+        newModel->setVertexData(cuboidVertexData);
+        return newModel;
+    }
 };
 
 #endif

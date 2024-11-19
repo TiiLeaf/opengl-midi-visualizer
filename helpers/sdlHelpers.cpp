@@ -88,7 +88,7 @@ void cleanup() {
 /*
 	Handle keyboard and window events.
 */
-void processEvents() {
+void processEvents(double& camDeltaTheta, double& camDeltaY) {
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) {
 		switch (e.type) {
@@ -102,7 +102,18 @@ void processEvents() {
 	if (keyboardState[SDL_SCANCODE_ESCAPE]) {
 		gShouldExit = true;
 	}
-
+	if (keyboardState[SDL_SCANCODE_UP]) {
+		camDeltaY += 0.01;
+	}
+	if (keyboardState[SDL_SCANCODE_DOWN]) {
+		camDeltaY -= 0.01;
+	}
+	if (keyboardState[SDL_SCANCODE_LEFT]) {
+		camDeltaTheta -= 0.0025;
+	}
+	if (keyboardState[SDL_SCANCODE_RIGHT]) {
+		camDeltaTheta += 0.0025;
+	}
 }
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef OBJECT_HPP
-#define OBJECT_HPP
+#ifndef MODEL_HPP
+#define MODEL_HPP
 
 #include <GL/glew.h>
 #include "SDL2/SDL.h"

@@ -8,18 +8,28 @@
 */
 class Object {
     private:
-        Model _model;
+        Model* _model;
+        
 
     public:
-        Object(Model model) {
+        float pos[3] = {0, 0, 0};
+
+        virtual ~Object() {
+            delete _model;
+        }
+
+        Object(Model* model) {
             _model = model;
         }
 
         virtual void draw() {
-            _model.draw();
+            glPushMatrix();
+            glTranslatef(pos[0], pos[1], pos[2]);
+            _model->draw();
+            glPopMatrix();
         }
 
-        virtual void update() = 0;
+        virtual void update(float deltaTime) = 0;
 };
 
-#endif OBJECT_HPP
+#endif

@@ -24,7 +24,7 @@ CLEAN=rm -f $(EXE) *.o *.a
 endif
 
 # Dependencies
-midiVis.o: midiVis.cpp ./helpers/sdlHelpers.cpp ./helpers/openglHelpers.cpp ./helpers/csvHelpers.cpp ./classes/Model.hpp ./classes/ModelFactory.hpp ./classes/Object.hpp
+midiVis.o: midiVis.cpp ./helpers/sdlHelpers.cpp ./helpers/openglHelpers.cpp ./helpers/csvHelpers.cpp ./classes/Model.hpp ./classes/ModelFactory.hpp ./classes/Object.hpp ./classes/Piano.hpp ./classes/Camera.hpp
 
 # Compile rules
 .c.o:

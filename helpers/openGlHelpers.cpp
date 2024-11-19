@@ -3,6 +3,21 @@
 
 #include <vector>
 
+void drawAxes() {
+    glBegin(GL_LINES);
+    glColor3f(1, 0, 0);
+    glVertex3d(0, 0, 0);
+    glVertex3d(3, 0, 0);
+    glColor3f(0, 1, 0);
+    glVertex3d(0, 0, 0);
+    glVertex3d(0, 3, 0);
+    glColor3f(0, 0, 1);
+    glVertex3d(0, 0, 0);
+    glVertex3d(0, 0, 3);
+    glEnd();
+    glColor3f(1, 1, 1);
+}
+
 /*
     Update the perspective projection to handle aspect ratio changes
 */
@@ -10,7 +25,7 @@ void setProjection(float aspectRatio) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    gluPerspective(66, aspectRatio, 0.1, 30);
+    gluPerspective(66, aspectRatio, 0.1, 100);
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();

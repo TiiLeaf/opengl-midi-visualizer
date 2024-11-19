@@ -15,6 +15,8 @@
 //classes
 #include "./classes/Model.hpp"
 #include "./classes/ModelFactory.hpp"
+#include "./classes/Object.hpp"
+#include "./classes/Piano.hpp"
 
 //c++ libraries
 #include <vector>
@@ -31,9 +33,7 @@ bool gShouldExit = false;
 SDL_GLContext gCtx = nullptr;
 const unsigned short gNumTextures = 3;
 unsigned int gTextures[gNumTextures];
-
-//all file globals go here and should never be used elsewhere
-Model* pianoShell;
+Camera gCamera(0, 7, 12);
 
 //
 // UPDATE AND DRAW SCENE
@@ -42,24 +42,36 @@ Model* pianoShell;
 /*
 	Create textures and models for objects in the scene, assign them references.
 */
-void buildScene() {
-	//build the shell of the piano using an obj file
-	gTextures[0] = loadBmpFile("./res/img/pianoTex.bmp");
-	pianoShell = ModelFactory::fromObj("./res/obj/pianoShell.obj");
-	pianoShell->setTextureHandle(0);
+std::vector<Object*> buildScene() {
+	std::vector<Object*> scene;
+
+	//load the texture and .obj model for the shell of the piano (the keys and strings are created dynamically in the `Piano` constructor)
+	gTextures[gTextureHandles::PIANO_SHELL] = loadBmpFile("./res/img/pianoShell.bmp");
+	gTextures[gTextureHandles::WHITE_KEY] = loadBmpFile("./res/img/whiteKey.bmp");
+	gTextures[gTextureHandles::BLACK_KEY] = loadBmpFile("./res/img/blackKey.bmp");
+	Model* pianoShellModel = ModelFactory::fromObj("./res/obj/pianoShell.obj");
+	pianoShellModel->setTextureHandle(gTextureHandles::PIANO_SHELL);
+
+	Piano* piano = new Piano(pianoShellModel);
+	scene.push_back(piano);
+	
+	return scene;
 }
 
 
 /*
 	Update the scene before it is drawn.
 */
-void update(double deltaTime) {
+void update(std::vector<Object*> scene, double deltaTime) {
+	for (size_t i = 0; i < scene.size(); i++) {
+		scene.at(i)->update(deltaTime);
+	}
 }
 
 /*
 	Draw the scene.
 */
-void draw() {
+void draw(std::vector<Object*> scene) {
 	//clear screen
     glClearColor(0.f, 0.f, 0.1f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -67,14 +79,17 @@ void draw() {
 
 	//reset transformations
 	glLoadIdentity();
-	glTranslatef(0, 0, -10);
+	gCamera.setModelViewMatrix();
 
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-	pianoShell->draw();
+	for (size_t i = 0; i < scene.size(); i++) {
+		scene.at(i)->draw();
+	}
 
     glDisable(GL_TEXTURE_2D);
+	//drawAxes();
 }
 
 //
@@ -89,7 +104,7 @@ int main(int argc, char* argv[]) {
 	setProjection(800.0f/600.0f);
 
 	//load the resouces neccecary to draw the scene
-	buildScene();
+	std::vector<Object*> scene = buildScene();
 
 	//setup deltaTime calculations
 	const double timerFrequency = SDL_GetPerformanceFrequency();
@@ -105,13 +120,26 @@ int main(int argc, char* argv[]) {
 		deltaTime = ((timerNow - timerLast)*1000 / timerFrequency);
 
 		//process keyboard and window events
-		processEvents();
+		double camDeltaTheta = 0;
+		double camDeltaY = 0;
+		processEvents(camDeltaTheta, camDeltaY);
 
-		update(deltaTime);
-		draw();
+		//move the camera based on the input
+		if (camDeltaTheta != 0 || camDeltaY != 0) {
+			gCamera.move(camDeltaTheta, camDeltaY, deltaTime);
+		}
+
+		update(scene, deltaTime); //update the scene
+		draw(scene); //draw the scene
 
 		SDL_GL_SwapWindow(gWindow);
 	}
+
+	//cleanup scene objects
+	for (size_t i = 0; i < scene.size(); i++) {
+		delete scene.at(i);
+	}
+	
 
 	//cleanup window and SLD before exiting
 	cleanup();
