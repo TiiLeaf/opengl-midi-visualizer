@@ -31,9 +31,13 @@
 SDL_Window* gWindow = nullptr;
 bool gShouldExit = false;
 SDL_GLContext gCtx = nullptr;
-const unsigned short gNumTextures = 3;
+const unsigned short gNumTextures = 4;
 unsigned int gTextures[gNumTextures];
 Camera gCamera(0, 7.5, 9);
+
+//all file globals go here and should never be used elsewhere
+Model* lampPost;
+Model* lampShade;
 
 //
 // UPDATE AND DRAW SCENE
@@ -44,6 +48,7 @@ Camera gCamera(0, 7.5, 9);
 */
 std::vector<Object*> buildScene() {
 	std::vector<Object*> scene;
+	gTextures[gTextureHandles::TEST] = loadBmpFile("./res/img/test.bmp");
 
 	//load the texture and .obj model for the shell of the piano (the keys and strings are created dynamically in the `Piano` constructor)
 	gTextures[gTextureHandles::PIANO_SHELL] = loadBmpFile("./res/img/pianoShell.bmp");
@@ -55,6 +60,13 @@ std::vector<Object*> buildScene() {
 	Piano* piano = new Piano(pianoShellModel);
 	scene.push_back(piano);
 	
+	lampPost = ModelFactory::fromLampPost(1.1, 6);
+	lampPost->setTextureHandle(gTextureHandles::BLACK_KEY);
+
+	lampShade = ModelFactory::fromLampShade(0, 0.8, 0.6);
+	lampShade->setTextureHandle(gTextureHandles::WHITE_KEY);
+	lampShade->pos[1] = 6;
+
 	return scene;
 }
 
@@ -85,8 +97,11 @@ void draw(std::vector<Object*> scene) {
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	for (size_t i = 0; i < scene.size(); i++) {
-		scene.at(i)->draw();
+		//scene.at(i)->draw();
 	}
+
+	lampPost->draw();
+	lampShade->draw();
 
     glDisable(GL_TEXTURE_2D);
 	//drawAxes();

@@ -11,6 +11,7 @@ extern const unsigned short gNumTextures;
 extern unsigned int gTextures[];
 extern Camera gCamera;
 enum gTextureHandles {
+	TEST,
 	PIANO_SHELL,
 	WHITE_KEY,
 	BLACK_KEY

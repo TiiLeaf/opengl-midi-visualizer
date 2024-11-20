@@ -12,6 +12,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
 class ModelFactory {
 private:
@@ -43,6 +44,16 @@ private:
         vertices.push_back(vn.at(normalIndex)[2]);
     }
 
+    static void addVertexToData(std::vector<float>& vertices, float pos[], float u, float v, float nx, float ny, float nz) {
+        vertices.push_back(pos[0]);
+        vertices.push_back(pos[1]);
+        vertices.push_back(pos[2]);
+        vertices.push_back(u);
+        vertices.push_back(v);
+        vertices.push_back(nx);
+        vertices.push_back(ny);
+        vertices.push_back(nz);
+    }
 
 public:
     static Model* fromObj(const char* fileName) {
@@ -109,6 +120,266 @@ public:
 
         Model* newModel = new Model;
         newModel->setVertexData(vertices);
+        return newModel;
+    }
+
+    static Model* fromLampShade(float bottomR, float topR, float h) {
+        std::vector<float> vertexData;
+
+        const float twoPi = 6.2831855f;
+        const size_t res = 16;
+
+        for (size_t i = 0; i < res; i++) {
+            //find the corners of this part of the cylinder
+            float theta = i * twoPi / res;
+            float nextTheta = (i+1) * twoPi / res;
+
+            float topLeftCorner[3] = { sin(theta) * topR, h, cos(theta) * topR };
+            float topRightCorner[3] = { sin(nextTheta) * topR, h, cos(nextTheta) * topR };
+            float bottomLeftCorner[3] = { sin(theta) * bottomR, 0, cos(theta) * bottomR };
+            float bottomRightCorner[3] = { sin(nextTheta) * bottomR, 0, cos(nextTheta) * bottomR };
+
+            //create two triangles using the corners for the outside of the cylinder
+            addVertexToData(vertexData,
+                topLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                bottomRightCorner, //x,y,z
+                1.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+        }
+
+        const float newH = h * 1.5;
+        const float newR = topR * 1.1;
+        for (size_t i = 0; i < res; i++) {
+            //find the corners of this part of the cylinder
+            float theta = i * twoPi / res;
+            float nextTheta = (i+1) * twoPi / res;
+
+            float topLeftCorner[3] = { sin(theta) * newR, newH, cos(theta) * newR };
+            float topRightCorner[3] = { sin(nextTheta) * newR, newH, cos(nextTheta) * newR };
+            float bottomLeftCorner[3] = { sin(theta) * topR, h, cos(theta) * topR };
+            float bottomRightCorner[3] = { sin(nextTheta) * topR, h, cos(nextTheta) * topR };
+
+            //create two triangles using the corners for the outside of the cylinder
+            addVertexToData(vertexData,
+                topLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                bottomRightCorner, //x,y,z
+                1.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+        }
+
+        Model* newModel = new Model;
+        newModel->setVertexData(vertexData);
+        return newModel;
+    }
+
+    static Model* fromLampPost(float r, float h) {
+        std::vector<float> vertexData;
+
+        const float twoPi = 6.2831855f;
+        const size_t res = 6;
+        const float baseHeight = 0.25f;
+        const float poleRadius = r * 0.1;
+
+        //float bottomCenter[] = {0.0f, 0.0f, 0.0f};
+        float topCenter[] = {0.0f, baseHeight * 2.0f, 0.0f};
+
+        //construct cylinder for the base of the lamp
+        for (size_t i = 0; i < res; i++) {
+            //find the corners of this part of the cylinder
+            float theta = i * twoPi / res;
+            float nextTheta = (i+1) * twoPi / res;
+
+            float topLeftCorner[3] = { sin(theta) * r, baseHeight, cos(theta) * r };
+            float topRightCorner[3] = { sin(nextTheta) * r, baseHeight, cos(nextTheta) * r };
+            float bottomLeftCorner[3] = { sin(theta) * r, 0, cos(theta) * r };
+            float bottomRightCorner[3] = { sin(nextTheta) * r, 0, cos(nextTheta) * r };
+
+            //create two triangles using the corners for the outside of the cylinder
+            addVertexToData(vertexData,
+                topLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                bottomRightCorner, //x,y,z
+                1.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+
+            //put a cap on the top of the cylinder
+            addVertexToData(vertexData,
+                topLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+            addVertexToData(vertexData,
+                topCenter, //x,y,z
+                0.0f, 0.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+
+            /*put a cap on the bottom of the cylinder
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+            addVertexToData(vertexData,
+                bottomRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+            addVertexToData(vertexData,
+                bottomCenter, //x,y,z
+                0.0f, 0.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+            */
+        }
+
+        //construct a cylinder for the pole of the lamp
+        topCenter[1] += h;
+        for (size_t i = 0; i < res; i++) {
+            //find the corners of this part of the cylinder
+            float theta = i * twoPi / res;
+            float nextTheta = (i+1) * twoPi / res;
+
+            float topLeftCorner[3] = { sin(theta) * poleRadius, h, cos(theta) * poleRadius };
+            float topRightCorner[3] = { sin(nextTheta) * poleRadius, h, cos(nextTheta) * poleRadius };
+            float bottomLeftCorner[3] = { sin(theta) * poleRadius, baseHeight, cos(theta) * poleRadius };
+            float bottomRightCorner[3] = { sin(nextTheta) * poleRadius, baseHeight, cos(nextTheta) * poleRadius };
+
+            //create two triangles using the corners for the outside of the cylinder
+            addVertexToData(vertexData,
+                topLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                bottomRightCorner, //x,y,z
+                1.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            
+            //put a cap on the top of the cylinder
+            addVertexToData(vertexData,
+                topLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+            addVertexToData(vertexData,
+                topCenter, //x,y,z
+                0.0f, 0.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+        }
+        
+        Model* newModel = new Model;
+        newModel->setVertexData(vertexData);
         return newModel;
     }
 
@@ -264,6 +535,156 @@ public:
 
         Model* newModel = new Model;
         newModel->setVertexData(cuboidVertexData);
+        return newModel;
+    }
+
+    static Model* fromLightBulb(float r) {
+            std::vector<float> vertexData;
+
+        const float twoPi = 6.2831855f;
+        const size_t res = 6;
+
+        for (size_t i = 0; i < res; i++) {
+            //find the corners of this part of the cylinder
+            float theta = i * twoPi / res;
+            float nextTheta = (i+1) * twoPi / res;
+
+            float topLeftCorner[3] = { sin(theta) * r, r, cos(theta) * r };
+            float topRightCorner[3] = { sin(nextTheta) * r, r, cos(nextTheta) * r };
+            float bottomLeftCorner[3] = { sin(theta) * r, 0, cos(theta) * r };
+            float bottomRightCorner[3] = { sin(nextTheta) * r, 0, cos(nextTheta) * r };
+
+            //create two triangles using the corners for the outside of the cylinder
+            addVertexToData(vertexData,
+                topLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                bottomRightCorner, //x,y,z
+                1.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+
+            //put a cap on the bottom of the cylinder
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+            addVertexToData(vertexData,
+                bottomRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+            addVertexToData(vertexData,
+                bottomCenter, //x,y,z
+                0.0f, 0.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+        }
+
+        for (size_t i = 0; i < res; i++) {
+            //find the corners of this part of the cylinder
+            float theta = i * twoPi / res;
+            float nextTheta = (i+1) * twoPi / res;
+
+            float topLeftCorner[3] = { sin(theta) * r, r + r, cos(theta) * r };
+            float topRightCorner[3] = { sin(nextTheta) * r, r + r, cos(nextTheta) * r };
+            float bottomLeftCorner[3] = { sin(theta) * r, r, cos(theta) * r };
+            float bottomRightCorner[3] = { sin(nextTheta) * r, r, cos(nextTheta) * r };
+
+            //create two triangles using the corners for the outside of the cylinder
+            addVertexToData(vertexData,
+                topLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+            addVertexToData(vertexData,
+                bottomRightCorner, //x,y,z
+                1.0f, 0.0f, //u,v
+                1.0f, 0.0f, 0.0f //todo normal
+            );
+
+            //put a cap on the top of the cylinder
+            addVertexToData(vertexData,
+                topLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+            addVertexToData(vertexData,
+                topCenter, //x,y,z
+                0.0f, 0.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+
+            //put a cap on the bottom of the cylinder
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+            addVertexToData(vertexData,
+                bottomRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+            addVertexToData(vertexData,
+                bottomCenter, //x,y,z
+                0.0f, 0.0f, //u,v
+                0.0f, 0.0f, -1.0f //normal
+            );
+        }
+
+        Model* newModel = new Model;
+        newModel->setVertexData(vertexData);
         return newModel;
     }
 };

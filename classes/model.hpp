@@ -5,13 +5,15 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_opengl.h"
 
+#include "../helpers/globals.h"
+
 #include <vector>
 
 class Model {
     private:
         size_t _vertexCount;
         std::vector<float> _vertexData;
-        unsigned int _textureHandle = -1;
+        unsigned int _textureHandle = gTextureHandles::TEST;
         const size_t _stride = 8;
 
     public:
@@ -36,7 +38,7 @@ class Model {
             glTranslatef(pos[0], pos[1], pos[2]);
 
             glBindTexture(GL_TEXTURE_2D, gTextures[_textureHandle]);
-
+            
             glBegin(GL_TRIANGLES);
             for (size_t i = 0; i < _vertexData.size(); i += _stride) {
                 glTexCoord2f(_vertexData[i + 3], _vertexData[i + 4]);
