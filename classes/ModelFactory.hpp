@@ -216,9 +216,7 @@ public:
         }
         file.close();
 
-        Model* newModel = new Model;
-        newModel->setVertexData(vertices);
-        return newModel;
+        return createModelWithVertexData(vertices);
     }
 
     static Model* fromCenteredCuboid(float w, float h, float d) {
@@ -270,9 +268,7 @@ public:
              sx,  sy,  sz, 1.0f, 1.0f,  0.0f,  1.0f,  0.0f
         };
 
-        Model* newModel = new Model;
-        newModel->setVertexData(cuboidVertexData);
-        return newModel;
+        return createModelWithVertexData(cuboidVertexData);
     }
 
     static Model* fromAnchoredCuboid(float w, float h, float d) {
@@ -321,13 +317,11 @@ public:
             w, h, d, 1.0f, 1.0f,  0.0f,  1.0f,  0.0f
         };
 
-        Model* newModel = new Model;
-        newModel->setVertexData(cuboidVertexData);
-        return newModel;
+        return createModelWithVertexData(cuboidVertexData);
     }
 
     static Model* fromBlackKey(float w, float h, float d, float o) {
-        std::vector<float> cuboidVertexData = {
+        std::vector<float> vertexData = {
             w, h, 0, 1.0f, 1.0f,  0.0f,  0.0f, -1.0f,
             w, 0, 0, 1.0f, 0.0f,  0.0f,  0.0f, -1.0f,
             0, 0, 0, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
@@ -371,9 +365,7 @@ public:
             w, h, d - o, 1.0f, 1.0f,  0.0f,  1.0f,  0.0f
         };
 
-        Model* newModel = new Model;
-        newModel->setVertexData(cuboidVertexData);
-        return newModel;
+        return createModelWithVertexData(vertexData);
     }
 
     static Model* fromLampPost(float baseRadius, float baseHeight, float postRadius, float postHeight) {
@@ -405,6 +397,48 @@ public:
 
         vertexData.insert(vertexData.end(), bottomVertexData.begin(), bottomVertexData.end());
         vertexData.insert(vertexData.end(), topVertexData.begin(), topVertexData.end());
+
+        return createModelWithVertexData(vertexData);
+    }
+
+    static Model* fromSkybox() {
+        std::vector<float> vertexData = {
+             1.0f,  1.0f, -1.0f, 1.0f, 1.0f,  0.0f,  0.0f, -1.0f,
+             1.0f, -1.0f, -1.0f, 1.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+            -1.0f,  1.0f, -1.0f, 0.0f, 1.0f,  0.0f,  0.0f, -1.0f,
+             1.0f,  1.0f, -1.0f, 1.0f, 1.0f,  0.0f,  0.0f, -1.0f,
+
+            -1.0f, -1.0f,  1.0f, 0.0f, 0.0f,  0.0f,  0.0f,  1.0f,
+             1.0f, -1.0f,  1.0f, 1.0f, 0.0f,  0.0f,  0.0f,  1.0f,
+             1.0f,  1.0f,  1.0f, 1.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+             1.0f,  1.0f,  1.0f, 1.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+            -1.0f,  1.0f,  1.0f, 0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+            -1.0f, -1.0f,  1.0f, 0.0f, 0.0f,  0.0f,  0.0f,  1.0f,
+
+            -1.0f,  1.0f,  1.0f, 1.0f, 1.0f, -1.0f,  0.0f,  0.0f,
+            -1.0f,  1.0f, -1.0f, 0.0f, 1.0f, -1.0f,  0.0f,  0.0f,
+            -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+            -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+            -1.0f, -1.0f,  1.0f, 1.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+            -1.0f,  1.0f,  1.0f, 1.0f, 1.0f, -1.0f,  0.0f,  0.0f,
+
+             1.0f, -1.0f, -1.0f, 0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+             1.0f,  1.0f, -1.0f, 0.0f, 1.0f,  1.0f,  0.0f,  0.0f,
+             1.0f,  1.0f,  1.0f, 1.0f, 1.0f,  1.0f,  0.0f,  0.0f,
+             1.0f,  1.0f,  1.0f, 1.0f, 1.0f,  1.0f,  0.0f,  0.0f,
+             1.0f, -1.0f,  1.0f, 1.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+             1.0f, -1.0f, -1.0f, 0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+        };
+
+        return createModelWithVertexData(vertexData);
+    }
+
+    static Model* fromFloor() {
+        std::vector<float> vertexData;
+
+        vertexData = createCylinderVertexData(4, 15, 15, 0, 0, false, 0, true, 0);
 
         return createModelWithVertexData(vertexData);
     }

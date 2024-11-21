@@ -17,7 +17,9 @@ enum gTextureHandles {
 	BLACK_KEY,
 	LAMP_POST,
 	LAMP_SHADE,
-	LAMP_LIGHT
+	LAMP_LIGHT,
+	SKYBOX_HOR,
+	SKYBOX_VER
 };
 
 #endif

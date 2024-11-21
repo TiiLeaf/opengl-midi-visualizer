@@ -22,6 +22,7 @@ class Camera {
         void move(double deltaTheta, double deltaY, double deltaTime) {
             _theta += (deltaTheta * deltaTime);
             _y += (deltaY * deltaTime);
+            _y = std::max(_y, 0.1);
         }
 
         void setModelViewMatrix() {
@@ -32,6 +33,18 @@ class Camera {
                 0, (_y * 0.1) + 2, 0,
                 0, 1, 0
             );
+        }
+
+        float getPosX() {
+            return sin(_theta) * _r;
+        }
+
+        float getPosY() {
+            return _y;
+        }
+
+        float getPosZ() {
+            return cos(_theta) * _r;;
         }
 };
 

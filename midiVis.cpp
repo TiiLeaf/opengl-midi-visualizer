@@ -32,11 +32,13 @@
 SDL_Window* gWindow = nullptr;
 bool gShouldExit = false;
 SDL_GLContext gCtx = nullptr;
-const unsigned short gNumTextures = 7;
+const unsigned short gNumTextures = 9;
 unsigned int gTextures[gNumTextures];
 Camera gCamera(0, 7, 10);
 
 //all file globals go here and should never be used elsewhere
+Model* skyBox;
+Model* ground;
 
 //
 // UPDATE AND DRAW SCENE
@@ -56,6 +58,14 @@ std::vector<Object*> buildScene() {
 	gTextures[gTextureHandles::PIANO_SHELL] = loadBmpFile("./res/img/pianoShell.bmp");
 	gTextures[gTextureHandles::WHITE_KEY] = loadBmpFile("./res/img/whiteKey.bmp");
 	gTextures[gTextureHandles::BLACK_KEY] = loadBmpFile("./res/img/blackKey.bmp");
+	gTextures[gTextureHandles::SKYBOX_HOR] = loadBmpFile("./res/img/skyboxSide.bmp");
+	gTextures[gTextureHandles::SKYBOX_VER] = loadBmpFile("./res/img/skyboxTop.bmp");
+
+
+	skyBox = ModelFactory::fromSkybox();
+	skyBox->setTextureHandle(gTextureHandles::SKYBOX_HOR);
+
+	ground = ModelFactory::fromFloor();
 
 	scene.push_back(new Piano());
 
@@ -82,23 +92,28 @@ void update(std::vector<Object*> scene, double deltaTime) {
 */
 void draw(std::vector<Object*> scene) {
 	//clear screen
-    glClearColor(0.f, 0.f, 0.1f, 1.f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
+
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 	//reset transformations
 	glLoadIdentity();
 	gCamera.setModelViewMatrix();
 
-    glEnable(GL_TEXTURE_2D);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glDisable(GL_DEPTH_TEST);
+	skyBox->pos[0] = gCamera.getPosX();
+	skyBox->pos[1] = gCamera.getPosY();
+	skyBox->pos[2] = gCamera.getPosZ();
+	skyBox->draw();
+	glEnable(GL_DEPTH_TEST);
 
 	for (size_t i = 0; i < scene.size(); i++) {
 		scene.at(i)->draw();
 	}
+	ground->draw();
 
-    glDisable(GL_TEXTURE_2D);
-	//drawAxes();
 }
 
 //
@@ -148,6 +163,9 @@ int main(int argc, char* argv[]) {
 	for (size_t i = 0; i < scene.size(); i++) {
 		delete scene.at(i);
 	}
+
+	delete skyBox;
+	delete ground;
 
 	//cleanup window and SLD before exiting
 	cleanup();
