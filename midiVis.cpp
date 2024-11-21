@@ -49,32 +49,27 @@ Model* lampLight;
 */
 std::vector<Object*> buildScene() {
 	std::vector<Object*> scene;
+
+	//load textures
 	gTextures[gTextureHandles::TEST] = loadBmpFile("./res/img/test.bmp");
 	gTextures[gTextureHandles::LAMP_POST] = loadBmpFile("./res/img/lampPost.bmp");
 	gTextures[gTextureHandles::LAMP_SHADE] = loadBmpFile("./res/img/lampShade.bmp");
 	gTextures[gTextureHandles::LAMP_LIGHT] = loadBmpFile("./res/img/lampLight.bmp");
-
-
-	//load the texture and .obj model for the shell of the piano (the keys and strings are created dynamically in the `Piano` constructor)
 	gTextures[gTextureHandles::PIANO_SHELL] = loadBmpFile("./res/img/pianoShell.bmp");
 	gTextures[gTextureHandles::WHITE_KEY] = loadBmpFile("./res/img/whiteKey.bmp");
 	gTextures[gTextureHandles::BLACK_KEY] = loadBmpFile("./res/img/blackKey.bmp");
-	Model* pianoShellModel = ModelFactory::fromObj("./res/obj/pianoShell.obj");
-	pianoShellModel->setTextureHandle(gTextureHandles::PIANO_SHELL);
 
-	Piano* piano = new Piano(pianoShellModel);
-	scene.push_back(piano);
-	
-	lampPost = ModelFactory::fromLampPost(1.1, 6.25);
+
+	lampPost = ModelFactory::fromLampPost(1.2f, 0.25f, 0.125f, 6.0f);
 	lampPost->setTextureHandle(gTextureHandles::LAMP_POST);
-
-	lampShade = ModelFactory::fromLampShade(0, 0.8, 0.6);
+	
+	lampShade = ModelFactory::fromLampShade(0.8f, 0.6f);
 	lampShade->setTextureHandle(gTextureHandles::LAMP_SHADE);
-	lampShade->pos[1] = 6;
+	lampShade->pos[1] = 6.0f;
 
-	lampLight = ModelFactory::fromLampBulb(0.15, 0.25);
+	lampLight = ModelFactory::fromLampBulb(0.15f, 0.3f);
 	lampLight->setTextureHandle(gTextureHandles::LAMP_LIGHT);
-	lampLight->pos[1] = 6.5;
+	lampLight->pos[1] = 6.5f;
 
 	return scene;
 }
@@ -105,9 +100,9 @@ void draw(std::vector<Object*> scene) {
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-	for (size_t i = 0; i < scene.size(); i++) {
+	/*for (size_t i = 0; i < scene.size(); i++) {
 		//scene.at(i)->draw();
-	}
+	}*/
 
 	lampPost->draw();
 	lampShade->draw();
@@ -164,8 +159,8 @@ int main(int argc, char* argv[]) {
 	for (size_t i = 0; i < scene.size(); i++) {
 		delete scene.at(i);
 	}
-	delete lampLight;
 	delete lampPost;
+	delete lampShade;
 	delete lampLight;
 	
 
