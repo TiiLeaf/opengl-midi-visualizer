@@ -2,34 +2,31 @@
 #define OBJECT_HPP
 
 #include "./Model.hpp"
+#include <vector>
 
-/*
-    Abstract class that allows me to type every object in the scene the same so I can pack them together into datastructures.
-*/
 class Object {
-    private:
-        Model* _model;
+    protected:
+        std::vector<Model*> _models;
         
-
     public:
         float pos[3] = {0, 0, 0};
 
         virtual ~Object() {
-            delete _model;
-        }
-
-        Object(Model* model) {
-            _model = model;
+            for (size_t i = 0; i < _models.size(); i++) {
+                delete _models.at(i);
+            }
         }
 
         virtual void draw() {
             glPushMatrix();
             glTranslatef(pos[0], pos[1], pos[2]);
-            _model->draw();
+            for (size_t i = 0; i < _models.size(); i++) {
+                _models.at(i)->draw();
+            }
             glPopMatrix();
         }
 
-        virtual void update(float deltaTime) = 0;
+        virtual void update(float deltaTime) {}
 };
 
 #endif

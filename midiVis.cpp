@@ -17,6 +17,7 @@
 #include "./classes/ModelFactory.hpp"
 #include "./classes/Object.hpp"
 #include "./classes/Piano.hpp"
+#include "./classes/Lamp.hpp"
 
 //c++ libraries
 #include <vector>
@@ -33,12 +34,9 @@ bool gShouldExit = false;
 SDL_GLContext gCtx = nullptr;
 const unsigned short gNumTextures = 7;
 unsigned int gTextures[gNumTextures];
-Camera gCamera(0, 7.5, 9);
+Camera gCamera(0, 7, 10);
 
 //all file globals go here and should never be used elsewhere
-Model* lampPost;
-Model* lampShade;
-Model* lampLight;
 
 //
 // UPDATE AND DRAW SCENE
@@ -59,17 +57,12 @@ std::vector<Object*> buildScene() {
 	gTextures[gTextureHandles::WHITE_KEY] = loadBmpFile("./res/img/whiteKey.bmp");
 	gTextures[gTextureHandles::BLACK_KEY] = loadBmpFile("./res/img/blackKey.bmp");
 
+	scene.push_back(new Piano());
 
-	lampPost = ModelFactory::fromLampPost(1.2f, 0.25f, 0.125f, 6.0f);
-	lampPost->setTextureHandle(gTextureHandles::LAMP_POST);
-	
-	lampShade = ModelFactory::fromLampShade(0.8f, 0.6f);
-	lampShade->setTextureHandle(gTextureHandles::LAMP_SHADE);
-	lampShade->pos[1] = 6.0f;
-
-	lampLight = ModelFactory::fromLampBulb(0.15f, 0.3f);
-	lampLight->setTextureHandle(gTextureHandles::LAMP_LIGHT);
-	lampLight->pos[1] = 6.5f;
+	Lamp* lamp = new Lamp();
+	lamp->pos[0] = -5.6f;
+	lamp->pos[2] = -2.66f;
+	scene.push_back(lamp);
 
 	return scene;
 }
@@ -100,13 +93,9 @@ void draw(std::vector<Object*> scene) {
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-	/*for (size_t i = 0; i < scene.size(); i++) {
-		//scene.at(i)->draw();
-	}*/
-
-	lampPost->draw();
-	lampShade->draw();
-	lampLight->draw();
+	for (size_t i = 0; i < scene.size(); i++) {
+		scene.at(i)->draw();
+	}
 
     glDisable(GL_TEXTURE_2D);
 	//drawAxes();
@@ -159,10 +148,6 @@ int main(int argc, char* argv[]) {
 	for (size_t i = 0; i < scene.size(); i++) {
 		delete scene.at(i);
 	}
-	delete lampPost;
-	delete lampShade;
-	delete lampLight;
-	
 
 	//cleanup window and SLD before exiting
 	cleanup();
