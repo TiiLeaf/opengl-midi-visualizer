@@ -14,7 +14,10 @@ enum gTextureHandles {
 	TEST,
 	PIANO_SHELL,
 	WHITE_KEY,
-	BLACK_KEY
+	BLACK_KEY,
+	LAMP_POST,
+	LAMP_SHADE,
+	LAMP_LIGHT
 };
 
 #endif
