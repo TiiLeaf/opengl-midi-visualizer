@@ -36,47 +36,32 @@ class Piano : public Object {
             //create the keys dynamically based on `pianoLayout`
             const float keyboardWidth = 8.0f;
             const size_t keyCount = pianoLayout.size();
-            const float keyWidth = keyboardWidth / keyCount;
+            const float whiteKeyWidth = keyboardWidth / (keyCount - 27);
+            const float blackKeyWidth = whiteKeyWidth * 0.66;
             const float keyHeight = 0.18f;
             const float keyDepth = 0.8f;
-
+            
+            int whiteKeysAdded = 0;
             for (size_t i = 0; i < keyCount; i++) {
                 if (pianoLayout.at(i).find('#') != std::string::npos) {
                     //create a black key
-                    Model* newKey = ModelFactory::fromBlackKey(keyWidth, keyHeight, keyDepth - 0.15f, 0.15f);
+                    Model* newKey = ModelFactory::fromBlackKey(blackKeyWidth, keyHeight, keyDepth - 0.15f, 0.15f);
                     newKey->setTextureHandle(gTextureHandles::BLACK_KEY);
 
-                    newKey->pos[0] = -(keyboardWidth * 0.5f) + (i * keyWidth);
+                    newKey->pos[0] = -(keyboardWidth * 0.5f) + (whiteKeysAdded * whiteKeyWidth) - (blackKeyWidth * 0.5f);
                     newKey->pos[1] = 3.08f;
                     newKey->pos[2] = 0.0f;
                     _models.push_back(newKey);
                 } else {
                     //create a white key
-
-                    //find all of the neighboring black keys
-                    std::vector<int> neighboringBlackKeys;
-                    if (i != 0 && pianoLayout.at(i-1).find('#') != std::string::npos)
-                        neighboringBlackKeys.push_back(-1);
-                    if (i + 1 < pianoLayout.size() && pianoLayout.at(i+1).find('#') != std::string::npos)
-                        neighboringBlackKeys.push_back(1);
-
-                    //increase the width based on how many neighboring black keys there are
-                    float width = keyWidth;
-                    width += (keyWidth * 0.5f * neighboringBlackKeys.size());
-
-                    //change the position if this white key is responsible for covering half of a black key to it's left
-                    float x = -(keyboardWidth * 0.5f) + (i * keyWidth);
-                    if (neighboringBlackKeys.size() > 0 && neighboringBlackKeys.at(0) == -1) {
-                        x -= keyWidth * 0.5f;
-                    } 
-
-                    Model* newKey = ModelFactory::fromAnchoredCuboid(width, keyHeight, keyDepth);
+                    Model* newKey = ModelFactory::fromAnchoredCuboid(whiteKeyWidth, keyHeight, keyDepth);
                     newKey->setTextureHandle(gTextureHandles::WHITE_KEY);
 
-                    newKey->pos[0] = x;
+                    newKey->pos[0] = -(keyboardWidth * 0.5f) + (whiteKeysAdded * whiteKeyWidth);
                     newKey->pos[1] = 3.0f;
                     newKey->pos[2] = 0.0f;
                     _models.push_back(newKey);
+                    whiteKeysAdded += 1;
                 }
             }
         }

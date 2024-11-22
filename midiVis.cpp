@@ -32,7 +32,7 @@
 SDL_Window* gWindow = nullptr;
 bool gShouldExit = false;
 SDL_GLContext gCtx = nullptr;
-const unsigned short gNumTextures = 9;
+const unsigned short gNumTextures = 8;
 unsigned int gTextures[gNumTextures];
 Camera gCamera(0, 7, 10);
 
@@ -58,9 +58,7 @@ std::vector<Object*> buildScene() {
 	gTextures[gTextureHandles::PIANO_SHELL] = loadBmpFile("./res/img/pianoShell.bmp");
 	gTextures[gTextureHandles::WHITE_KEY] = loadBmpFile("./res/img/whiteKey.bmp");
 	gTextures[gTextureHandles::BLACK_KEY] = loadBmpFile("./res/img/blackKey.bmp");
-	gTextures[gTextureHandles::SKYBOX_HOR] = loadBmpFile("./res/img/skyboxSide.bmp");
-	gTextures[gTextureHandles::SKYBOX_VER] = loadBmpFile("./res/img/skyboxTop.bmp");
-
+	gTextures[gTextureHandles::SKYBOX_HOR] = loadBmpFile("./res/img/skyboxSideStars.bmp");
 
 	skyBox = ModelFactory::fromSkybox();
 	skyBox->setTextureHandle(gTextureHandles::SKYBOX_HOR);
@@ -124,8 +122,8 @@ int main(int argc, char* argv[]) {
 	initSDL();
 
 	//try to create a window, gShouldExit is false if creation fails
-	createWindow("MidiVis [Sam Jansen, CSCI 4229]", 800, 600);
-	setProjection(800.0f/600.0f);
+	createWindow("MidiVis [Sam Jansen, CSCI 4229]", 1024, 768);
+	setProjection(4.0f/3.0f);
 
 	//load the resouces neccecary to draw the scene
 	std::vector<Object*> scene = buildScene();

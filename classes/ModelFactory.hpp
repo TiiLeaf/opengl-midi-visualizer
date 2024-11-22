@@ -438,7 +438,7 @@ public:
     static Model* fromFloor() {
         std::vector<float> vertexData;
 
-        vertexData = createCylinderVertexData(4, 15, 15, 0, 0, false, 0, true, 0);
+        vertexData = createCylinderVertexData(16, 15, 15, 0, 0, false, 0, true, 0);
 
         return createModelWithVertexData(vertexData);
     }
