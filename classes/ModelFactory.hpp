@@ -50,6 +50,12 @@ private:
         vertices.push_back(vn.at(normalIndex)[2]);
     }
 
+    static void computeNormal(float normal[], float a[], float b[], float c[]) {
+        normal[0] = (b[1]-a[1])*(c[2]-a[2])-(b[2]-a[2])*(c[1]-a[1]);
+        normal[1] = (b[2]-a[2])*(c[0]-a[0])-(b[0]-a[0])*(c[2]-a[2]);
+        normal[2] = (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[2]-a[0]);
+    }
+
     static void addVertexToData(std::vector<float>& vertices, float pos[], float u, float v, float nx, float ny, float nz) {
         vertices.push_back(pos[0]);
         vertices.push_back(pos[1]);
@@ -77,75 +83,79 @@ private:
             float bottomRightCorner[3] = { sin(nextTheta) * bottomR, startY, cos(nextTheta) * bottomR };
 
             //create two triangles using the corners for the outside of the cylinder
+            float normal[3];
+            computeNormal(normal, topLeftCorner, topRightCorner, bottomLeftCorner);
             addVertexToData(vertexData,
                 topLeftCorner, //x,y,z
                 0.0f, 1.0f, //u,v
-                1.0f, 0.0f, 0.0f //todo normal
+                normal[0], normal[1], normal[2] //normal
             );
             addVertexToData(vertexData,
                 topRightCorner, //x,y,z
                 1.0f, 1.0f, //u,v
-                1.0f, 0.0f, 0.0f //todo normal
+                normal[0], normal[1], normal[2] //normal
             );
             addVertexToData(vertexData,
                 bottomLeftCorner, //x,y,z
                 0.0f, 0.0f, //u,v
-                1.0f, 0.0f, 0.0f //todo normal
+                normal[0], normal[1], normal[2] //normal
             );
 
             addVertexToData(vertexData,
                 bottomLeftCorner, //x,y,z
                 0.0f, 0.0f, //u,v
-                1.0f, 0.0f, 0.0f //todo normal
+                normal[0], normal[1], normal[2] //normal
             );
             addVertexToData(vertexData,
                 topRightCorner, //x,y,z
                 1.0f, 1.0f, //u,v
-                1.0f, 0.0f, 0.0f //todo normal
+                normal[0], normal[1], normal[2] //normal
             );
             addVertexToData(vertexData,
                 bottomRightCorner, //x,y,z
                 1.0f, 0.0f, //u,v
-                1.0f, 0.0f, 0.0f //todo normal
+                normal[0], normal[1], normal[2] //normal
             );
 
             //put a cap on the top of the cylinder
             if (hasTopCap) {
                 float topCenter[] = {0.0f, endY + topCapOffset, 0.0f};
+                computeNormal(normal, topLeftCorner, topRightCorner, topCenter);
                 addVertexToData(vertexData,
                     topLeftCorner, //x,y,z
                     0.0f, 1.0f, //u,v
-                    0.0f, 0.0f, -1.0f //normal
+                    normal[0], normal[1], normal[2] //normal
                 );
                 addVertexToData(vertexData,
                     topRightCorner, //x,y,z
                     1.0f, 1.0f, //u,v
-                    0.0f, 0.0f, -1.0f //normal
+                    normal[0], normal[1], normal[2] //normal
                 );
                 addVertexToData(vertexData,
                     topCenter, //x,y,z
                     0.0f, 0.0f, //u,v
-                    0.0f, 0.0f, -1.0f //normal
+                    normal[0], normal[1], normal[2] //normal
                 );
             }
 
             //put a cap on the bottom of the cylinder
             if (hasBottomCap) {
                 float bottomCenter[] = {0.0f, startY + bottomCapOffset, 0.0f};
+                computeNormal(normal, bottomLeftCorner, bottomRightCorner, bottomCenter);
                 addVertexToData(vertexData,
                     bottomLeftCorner, //x,y,z
                     0.0f, 1.0f, //u,v
-                    0.0f, 0.0f, -1.0f //normal
+                    normal[0], normal[1], normal[2] //normal
                 );
                 addVertexToData(vertexData,
                     bottomRightCorner, //x,y,z
                     1.0f, 1.0f, //u,v
-                    0.0f, 0.0f, -1.0f //normal
+                    normal[0], normal[1], normal[2] //normal
                 );
                 addVertexToData(vertexData,
                     bottomCenter, //x,y,z
                     0.0f, 0.0f, //u,v
-                    0.0f, 0.0f, -1.0f //normal
+                    normal[0], normal[1], normal[2] //normal
                 );
             }
         }

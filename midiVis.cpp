@@ -93,6 +93,7 @@ void draw(std::vector<Object*> scene) {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	//enable textures
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
@@ -100,6 +101,8 @@ void draw(std::vector<Object*> scene) {
 	glLoadIdentity();
 	gCamera.setModelViewMatrix();
 
+	//draw the skybox
+	glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
 	skyBox->pos[0] = gCamera.getPosX();
 	skyBox->pos[1] = gCamera.getPosY();
@@ -107,6 +110,22 @@ void draw(std::vector<Object*> scene) {
 	skyBox->draw();
 	glEnable(GL_DEPTH_TEST);
 
+	//setup lighting
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_LIGHTING);
+
+    float ambient[]   = {0.15, 0.15, 0.15};
+    float diffuse[]   = {0.85, 0.85, 0.85};
+    float specular[]  = {0.0, 0.0, 0.0};
+    float position[]  = {-5.6, 7, -2.66};
+    glEnable(GL_LIGHT0);
+
+	glLightfv(GL_LIGHT0,GL_AMBIENT, ambient);
+    glLightfv(GL_LIGHT0,GL_DIFFUSE, diffuse);
+    glLightfv(GL_LIGHT0,GL_SPECULAR, specular);
+    glLightfv(GL_LIGHT0,GL_POSITION, position);
+
+	//draw the scene
 	for (size_t i = 0; i < scene.size(); i++) {
 		scene.at(i)->draw();
 	}
