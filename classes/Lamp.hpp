@@ -13,6 +13,7 @@
 
 class Lamp : public Object {
     private:
+        std::vector<Model*> _fullBrightModels;
 
     public:
         Lamp() {
@@ -28,8 +29,23 @@ class Lamp : public Object {
             lampLight->pos[1] = 6.5f;
 
             _models.push_back(lampPost);
-            _models.push_back(lampShade);
-            _models.push_back(lampLight);
+            _fullBrightModels.push_back(lampShade);
+            _fullBrightModels.push_back(lampLight);
+        }
+
+        void draw() override {
+            // Draw the lamp shade and lightbulb at full brightness
+            glDisable(GL_LIGHTING);
+            glPushMatrix();
+            glTranslatef(pos[0], pos[1], pos[2]);
+            for (size_t i = 0; i < _fullBrightModels.size(); i++) {
+                _fullBrightModels.at(i)->draw();
+            }
+            glPopMatrix();
+            glEnable(GL_LIGHTING);
+
+            // Draw the rest of the models under the infuence of the light
+            Object::draw();
         }
 };
 

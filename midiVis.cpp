@@ -39,6 +39,7 @@ Camera gCamera(0, 7, 10);
 //all file globals go here and should never be used elsewhere
 Model* skyBox;
 Model* ground;
+Model* cube;
 
 //
 // UPDATE AND DRAW SCENE
@@ -63,7 +64,11 @@ std::vector<Object*> buildScene() {
 	skyBox = ModelFactory::fromSkybox();
 	skyBox->setTextureHandle(gTextureHandles::SKYBOX_HOR);
 
+	cube = ModelFactory::fromCenteredCuboid(0.1, 0.1, 0.1);
+	cube->setTextureHandle(gTextureHandles::WHITE_KEY);
+
 	ground = ModelFactory::fromFloor();
+	cube->setTextureHandle(gTextureHandles::LAMP_POST);
 
 	scene.push_back(new Piano());
 
@@ -114,23 +119,28 @@ void draw(std::vector<Object*> scene) {
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_LIGHTING);
 
-    float ambient[]   = {0.15, 0.15, 0.15};
-    float diffuse[]   = {0.85, 0.85, 0.85};
-    float specular[]  = {0.0, 0.0, 0.0};
-    float position[]  = {-5.6, 7, -2.66};
-    glEnable(GL_LIGHT0);
+
+
+    float ambient[]   = {0.125f, 0.125f, 0.125f, 1.0f};
+    float diffuse[]   = {0.88f, 0.88f, 0.88f, 1.0f};
+    float specular[]  = {0.0, 0.0, 0.0, 1.0f};
+    float position[]  = {-5.6f, 7.5f, -2.66f, 1.0f};
+	cube->pos[0] = position[0];
+	cube->pos[1] = position[1];
+	cube->pos[2] = position[2];
 
 	glLightfv(GL_LIGHT0,GL_AMBIENT, ambient);
     glLightfv(GL_LIGHT0,GL_DIFFUSE, diffuse);
     glLightfv(GL_LIGHT0,GL_SPECULAR, specular);
     glLightfv(GL_LIGHT0,GL_POSITION, position);
+    glEnable(GL_LIGHT0);
 
 	//draw the scene
 	for (size_t i = 0; i < scene.size(); i++) {
 		scene.at(i)->draw();
 	}
+	cube->draw();
 	ground->draw();
-
 }
 
 //
@@ -183,6 +193,7 @@ int main(int argc, char* argv[]) {
 
 	delete skyBox;
 	delete ground;
+	delete cube;
 
 	//cleanup window and SLD before exiting
 	cleanup();
