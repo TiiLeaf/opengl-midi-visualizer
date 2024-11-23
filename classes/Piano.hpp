@@ -33,6 +33,16 @@ class Piano : public Object {
                 "C7", "C#7", "D7"
             };
 
+            std::vector<float> stringLengths = {
+                3.0f, 3.0f, 3.0f,
+                3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f,
+                3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f,
+                3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f,
+                3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f,
+                3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 1.0f,
+                1.0f, 1.0f, 1.0f
+            };
+
             //create the keys dynamically based on `pianoLayout`
             const float keyboardWidth = 8.0f;
             const size_t keyCount = pianoLayout.size();
@@ -48,19 +58,40 @@ class Piano : public Object {
                     Model* newKey = ModelFactory::fromBlackKey(blackKeyWidth, keyHeight, keyDepth - 0.15f, 0.15f);
                     newKey->setTextureHandle(gTextureHandles::BLACK_KEY);
 
-                    newKey->pos[0] = -(keyboardWidth * 0.5f) + (whiteKeysAdded * whiteKeyWidth) - (blackKeyWidth * 0.5f);
-                    newKey->pos[1] = 3.08f;
-                    newKey->pos[2] = 0.0f;
+                    float x = -(keyboardWidth * 0.5f) + (whiteKeysAdded * whiteKeyWidth) - (blackKeyWidth * 0.5f);
+                    float y = 3.08f;
+
+                    newKey->pos[0] = x;
+                    newKey->pos[1] = y;
                     _models.push_back(newKey);
+
+                    //create string
+                    Model* newString = ModelFactory::fromAnchoredCuboid(0.01f, 0.01f, -stringLengths.at(i));
+                    newString->setTextureHandle(gTextureHandles::WHITE_KEY);
+                    newString->pos[0] = x + (blackKeyWidth * 0.5f);
+                    newString->pos[1] = y + 0.14f;
+                    newString->pos[2] = -1.0f;
+                    _models.push_back(newString);
                 } else {
                     //create a white key
                     Model* newKey = ModelFactory::fromAnchoredCuboid(whiteKeyWidth, keyHeight, keyDepth);
                     newKey->setTextureHandle(gTextureHandles::WHITE_KEY);
 
-                    newKey->pos[0] = -(keyboardWidth * 0.5f) + (whiteKeysAdded * whiteKeyWidth);
-                    newKey->pos[1] = 3.0f;
-                    newKey->pos[2] = 0.0f;
+                    float x = -(keyboardWidth * 0.5f) + (whiteKeysAdded * whiteKeyWidth);
+                    float y = 3.0f;
+
+                    newKey->pos[0] = x;
+                    newKey->pos[1] = y;
                     _models.push_back(newKey);
+
+                    //create string
+                    Model* newString = ModelFactory::fromAnchoredCuboid(0.01f, 0.01f, -stringLengths.at(i));
+                    newString->setTextureHandle(gTextureHandles::WHITE_KEY);
+                    newString->pos[0] = x + (whiteKeyWidth * 0.5f);
+                    newString->pos[1] = y + 0.12f;
+                    newString->pos[2] = -1.0f;
+                    _models.push_back(newString);
+
                     whiteKeysAdded += 1;
                 }
             }

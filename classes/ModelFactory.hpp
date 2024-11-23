@@ -134,7 +134,7 @@ private:
                 addVertexToData(vertexData,
                     topCenter, //x,y,z
                     0.0f, 0.0f, //u,v
-                    normal[0], normal[1], normal[2] //normal
+                    0.0f, 1.0f, 0.0f //normal
                 );
             }
 
@@ -155,7 +155,7 @@ private:
                 addVertexToData(vertexData,
                     bottomCenter, //x,y,z
                     0.0f, 0.0f, //u,v
-                    normal[0], normal[1], normal[2] //normal
+                    0.0f, -1.0f, 0.0f //normal
                 );
             }
         }
@@ -445,10 +445,35 @@ public:
         return createModelWithVertexData(vertexData);
     }
 
-    static Model* fromFloor() {
+    static Model* fromFloor(float r) {
         std::vector<float> vertexData;
+        
+        const float twoPi = 6.2831855f;
 
-        vertexData = createCylinderVertexData(16, 15, 15, 0, 0, false, 0, true, 0);
+        for (size_t i = 0; i < 8; i++) {
+            float theta = i * twoPi / 8;
+            float nextTheta = (i+1) * twoPi / 8;
+
+            float leftCorner[3] = { sin(theta) * r, 0.0f, cos(theta) * r };
+            float rightCorner[3] = { sin(nextTheta) * r, 0.0f, cos(nextTheta) * r };
+            float center[3] = {0.0f, 0.0f, 0.0f};
+
+            addVertexToData(vertexData,
+                leftCorner,
+                (sin(theta) * 0.5f) + 0.5f, (cos(theta) * 0.5f) + 0.5f,
+                0.1f, 1.0f, 0.0f
+            );
+            addVertexToData(vertexData,
+                rightCorner,
+                (sin(nextTheta) * 0.5f) + 0.5f, (cos(nextTheta) * 0.5f) + 0.5f,
+                0.1f, 1.0f, 0.0f
+            );
+            addVertexToData(vertexData,
+                center,
+                0.5f, 0.5f,
+                0.1f, 1.0f, 0.0f
+            );
+        }
 
         return createModelWithVertexData(vertexData);
     }

@@ -37,9 +37,9 @@ unsigned int gTextures[gNumTextures];
 Camera gCamera(0, 7, 10);
 
 //all file globals go here and should never be used elsewhere
+float lightPosition[4]  = {0.0f, 7.0f, 0.0f, 1.0f};
 Model* skyBox;
 Model* ground;
-Model* cube;
 
 //
 // UPDATE AND DRAW SCENE
@@ -64,22 +64,20 @@ std::vector<Object*> buildScene() {
 	skyBox = ModelFactory::fromSkybox();
 	skyBox->setTextureHandle(gTextureHandles::SKYBOX_HOR);
 
-	cube = ModelFactory::fromCenteredCuboid(0.1, 0.1, 0.1);
-	cube->setTextureHandle(gTextureHandles::WHITE_KEY);
-
-	ground = ModelFactory::fromFloor();
-	cube->setTextureHandle(gTextureHandles::LAMP_POST);
+	ground = ModelFactory::fromFloor(10); 
+	ground->setTextureHandle(gTextureHandles::WHITE_KEY);
 
 	scene.push_back(new Piano());
 
 	Lamp* lamp = new Lamp();
-	lamp->pos[0] = -5.6f;
-	lamp->pos[2] = -2.66f;
+	lamp->pos[0] = 5.75f;
+	lamp->pos[2] = 1.25f;
+	lightPosition[0] = lamp->pos[0];
+	lightPosition[2] = lamp->pos[2];
 	scene.push_back(lamp);
 
 	return scene;
 }
-
 
 /*
 	Update the scene before it is drawn.
@@ -119,27 +117,20 @@ void draw(std::vector<Object*> scene) {
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_LIGHTING);
 
-
-
-    float ambient[]   = {0.125f, 0.125f, 0.125f, 1.0f};
-    float diffuse[]   = {0.88f, 0.88f, 0.88f, 1.0f};
-    float specular[]  = {0.0, 0.0, 0.0, 1.0f};
-    float position[]  = {-5.6f, 7.5f, -2.66f, 1.0f};
-	cube->pos[0] = position[0];
-	cube->pos[1] = position[1];
-	cube->pos[2] = position[2];
+    float ambient[]   = {0.133f, 0.133f, 0.133f, 1.0f};
+    float diffuse[]   = {0.9f, 0.9f, 0.9f, 1.0f};
+    float specular[]  = {0.0f, 0.0f, 0.0f, 1.0f};
 
 	glLightfv(GL_LIGHT0,GL_AMBIENT, ambient);
     glLightfv(GL_LIGHT0,GL_DIFFUSE, diffuse);
     glLightfv(GL_LIGHT0,GL_SPECULAR, specular);
-    glLightfv(GL_LIGHT0,GL_POSITION, position);
+    glLightfv(GL_LIGHT0,GL_POSITION, lightPosition);
     glEnable(GL_LIGHT0);
 
 	//draw the scene
 	for (size_t i = 0; i < scene.size(); i++) {
 		scene.at(i)->draw();
 	}
-	cube->draw();
 	ground->draw();
 }
 
@@ -187,13 +178,11 @@ int main(int argc, char* argv[]) {
 	}
 
 	//cleanup scene objects
+	delete skyBox;
+	delete ground;
 	for (size_t i = 0; i < scene.size(); i++) {
 		delete scene.at(i);
 	}
-
-	delete skyBox;
-	delete ground;
-	delete cube;
 
 	//cleanup window and SLD before exiting
 	cleanup();
