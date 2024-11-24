@@ -71,7 +71,7 @@ class Piano : public Object {
                     newString->pos[0] = x + (blackKeyWidth * 0.5f);
                     newString->pos[1] = y + 0.14f;
                     newString->pos[2] = -1.0f;
-                    _models.push_back(newString);
+                    //_models.push_back(newString);
                 } else {
                     //create a white key
                     Model* newKey = ModelFactory::fromAnchoredCuboid(whiteKeyWidth, keyHeight, keyDepth);
@@ -90,7 +90,7 @@ class Piano : public Object {
                     newString->pos[0] = x + (whiteKeyWidth * 0.5f);
                     newString->pos[1] = y + 0.12f;
                     newString->pos[2] = -1.0f;
-                    _models.push_back(newString);
+                    //_models.push_back(newString);
 
                     whiteKeysAdded += 1;
                 }

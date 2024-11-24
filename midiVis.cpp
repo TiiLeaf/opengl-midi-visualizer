@@ -32,7 +32,7 @@
 SDL_Window* gWindow = nullptr;
 bool gShouldExit = false;
 SDL_GLContext gCtx = nullptr;
-const unsigned short gNumTextures = 8;
+const unsigned short gNumTextures = 9;
 unsigned int gTextures[gNumTextures];
 Camera gCamera(0, 7, 10);
 
@@ -60,18 +60,21 @@ std::vector<Object*> buildScene() {
 	gTextures[gTextureHandles::WHITE_KEY] = loadBmpFile("./res/img/whiteKey.bmp");
 	gTextures[gTextureHandles::BLACK_KEY] = loadBmpFile("./res/img/blackKey.bmp");
 	gTextures[gTextureHandles::SKYBOX_HOR] = loadBmpFile("./res/img/skyboxSideStars.bmp");
+	gTextures[gTextureHandles::FLOOR] = loadBmpFile("./res/img/floor.bmp");
 
 	skyBox = ModelFactory::fromSkybox();
 	skyBox->setTextureHandle(gTextureHandles::SKYBOX_HOR);
 
-	ground = ModelFactory::fromFloor(10); 
-	ground->setTextureHandle(gTextureHandles::WHITE_KEY);
+	ground = ModelFactory::fromFloor(12); 
+	ground->setTextureHandle(gTextureHandles::FLOOR);
 
-	scene.push_back(new Piano());
+	Piano* piano = new Piano();
+	piano->pos[2] = 1.0f;
+	scene.push_back(piano);
 
 	Lamp* lamp = new Lamp();
-	lamp->pos[0] = 5.75f;
-	lamp->pos[2] = 1.25f;
+	lamp->pos[0] = 6.5f;
+	lamp->pos[2] = 2.5f;
 	lightPosition[0] = lamp->pos[0];
 	lightPosition[2] = lamp->pos[2];
 	scene.push_back(lamp);
@@ -117,7 +120,7 @@ void draw(std::vector<Object*> scene) {
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_LIGHTING);
 
-    float ambient[]   = {0.133f, 0.133f, 0.133f, 1.0f};
+    float ambient[]   = {0.175f, 0.175f, 0.175f, 1.0f};
     float diffuse[]   = {0.9f, 0.9f, 0.9f, 1.0f};
     float specular[]  = {0.0f, 0.0f, 0.0f, 1.0f};
 

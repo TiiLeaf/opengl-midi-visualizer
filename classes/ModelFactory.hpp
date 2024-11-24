@@ -449,10 +449,10 @@ public:
         std::vector<float> vertexData;
         
         const float twoPi = 6.2831855f;
-
-        for (size_t i = 0; i < 8; i++) {
-            float theta = i * twoPi / 8;
-            float nextTheta = (i+1) * twoPi / 8;
+        const size_t res = 32;
+        for (size_t i = 0; i < res; i++) {
+            float theta = i * twoPi / res;
+            float nextTheta = (i+1) * twoPi / res;
 
             float leftCorner[3] = { sin(theta) * r, 0.0f, cos(theta) * r };
             float rightCorner[3] = { sin(nextTheta) * r, 0.0f, cos(nextTheta) * r };
