@@ -56,7 +56,7 @@ std::vector<Object*> buildScene() {
 	gTextures[gTextureHandles::LAMP_POST] = loadBmpFile("./res/img/lampPost.bmp");
 	gTextures[gTextureHandles::LAMP_SHADE] = loadBmpFile("./res/img/lampShade.bmp");
 	gTextures[gTextureHandles::LAMP_LIGHT] = loadBmpFile("./res/img/lampLight.bmp");
-	gTextures[gTextureHandles::PIANO_SHELL] = loadBmpFile("./res/img/piano.bmp");
+	gTextures[gTextureHandles::PIANO_SHELL] = loadBmpFile("./res/img/pianoWithInside.bmp");
 	gTextures[gTextureHandles::WHITE_KEY] = loadBmpFile("./res/img/whiteKey.bmp");
 	gTextures[gTextureHandles::BLACK_KEY] = loadBmpFile("./res/img/blackKey.bmp");
 	gTextures[gTextureHandles::SKYBOX_HOR] = loadBmpFile("./res/img/skyboxSideStars.bmp");

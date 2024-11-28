@@ -19,7 +19,7 @@ class Piano : public Object {
 
     public:
         Piano() {
-            Model* shellModel = ModelFactory::fromObj("./res/obj/grandPiano.obj");
+            Model* shellModel = ModelFactory::fromObj("./res/obj/pianoWithInside2.obj");
             shellModel->setTextureHandle(gTextureHandles::PIANO_SHELL);
             _models.push_back(shellModel);
 
