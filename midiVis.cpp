@@ -32,7 +32,7 @@
 SDL_Window* gWindow = nullptr;
 bool gShouldExit = false;
 SDL_GLContext gCtx = nullptr;
-const unsigned short gNumTextures = 9;
+const unsigned short gNumTextures = 10;
 unsigned int gTextures[gNumTextures];
 Camera gCamera(0, 7, 10);
 
@@ -40,6 +40,7 @@ Camera gCamera(0, 7, 10);
 float lightPosition[4]  = {0.0f, 7.0f, 0.0f, 1.0f};
 Model* skyBox;
 Model* ground;
+Model* circle;
 
 //
 // UPDATE AND DRAW SCENE
@@ -61,12 +62,16 @@ std::vector<Object*> buildScene() {
 	gTextures[gTextureHandles::BLACK_KEY] = loadBmpFile("./res/img/blackKey.bmp");
 	gTextures[gTextureHandles::SKYBOX_HOR] = loadBmpFile("./res/img/skyboxSideStars.bmp");
 	gTextures[gTextureHandles::FLOOR] = loadBmpFile("./res/img/floor.bmp");
+	gTextures[gTextureHandles::CEMENT] = loadBmpFile("./res/img/cement.bmp");
 
 	skyBox = ModelFactory::fromSkybox();
 	skyBox->setTextureHandle(gTextureHandles::SKYBOX_HOR);
 
-	ground = ModelFactory::fromFloor(12); 
-	ground->setTextureHandle(gTextureHandles::FLOOR);
+	ground = ModelFactory::fromTurrets(12, 1); 
+	ground->setTextureHandle(gTextureHandles::CEMENT);
+
+	circle = ModelFactory::fromFloor(12);
+	circle->setTextureHandle(gTextureHandles::FLOOR);
 
 	Piano* piano = new Piano();
 	piano->pos[2] = 1.0f;
@@ -135,6 +140,7 @@ void draw(std::vector<Object*> scene) {
 		scene.at(i)->draw();
 	}
 	ground->draw();
+	circle->draw();
 }
 
 //
@@ -183,6 +189,7 @@ int main(int argc, char* argv[]) {
 	//cleanup scene objects
 	delete skyBox;
 	delete ground;
+	delete circle;
 	for (size_t i = 0; i < scene.size(); i++) {
 		delete scene.at(i);
 	}

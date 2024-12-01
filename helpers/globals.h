@@ -19,7 +19,8 @@ enum gTextureHandles {
 	LAMP_SHADE,
 	LAMP_LIGHT,
 	SKYBOX_HOR,
-	FLOOR
+	FLOOR,
+	CEMENT
 };
 
 #endif

@@ -10,19 +10,15 @@
 #include "../helpers/globals.h"
 
 #include <vector>
+#include <array>
 #include <string>
 
 class Piano : public Object {
     private:
-        unsigned int _keysStartIndex;
-        unsigned int _keysEndIndex;
+        std::vector<std::array<float, 6>> _strings;
 
     public:
         Piano() {
-            Model* shellModel = ModelFactory::fromObj("./res/obj/pianoWithInside2.obj");
-            shellModel->setTextureHandle(gTextureHandles::PIANO_SHELL);
-            _models.push_back(shellModel);
-
             std::vector<std::string> pianoLayout = {
                 "A1", "A#1", "B1",
                 "C2", "C#2", "D2", "D#2", "E2", "F2", "F#2", "G2", "G#2", "A2", "A#2", "B2",
@@ -33,14 +29,14 @@ class Piano : public Object {
                 "C7", "C#7", "D7"
             };
 
-            std::vector<float> stringLengths = {
-                3.0f, 3.0f, 3.0f,
-                3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f,
-                3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f,
-                3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f,
-                3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f,
-                3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 3.0f, 1.0f,
-                1.0f, 1.0f, 1.0f
+            std::vector<float> stringEndpoints = {
+                0,1, 0,1, 0,1, 
+                0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1,
+                0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1,
+                0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1,
+                0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1,
+                0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1,
+                0,1, 0,1, 0,1
             };
 
             //create the keys dynamically based on `pianoLayout`
@@ -60,18 +56,11 @@ class Piano : public Object {
 
                     float x = -(keyboardWidth * 0.5f) + (whiteKeysAdded * whiteKeyWidth) - (blackKeyWidth * 0.5f);
                     float y = 3.08f;
-
                     newKey->pos[0] = x;
                     newKey->pos[1] = y;
-                    _models.push_back(newKey);
 
-                    //create string
-                    Model* newString = ModelFactory::fromAnchoredCuboid(0.01f, 0.01f, -stringLengths.at(i));
-                    newString->setTextureHandle(gTextureHandles::WHITE_KEY);
-                    newString->pos[0] = x + (blackKeyWidth * 0.5f);
-                    newString->pos[1] = y + 0.14f;
-                    newString->pos[2] = -1.0f;
-                    //_models.push_back(newString);
+                    _models.push_back(newKey);
+                    _strings.push_back({newKey->pos[0], newKey->pos[1] + 2.0f, newKey->pos[2], stringEndpoints.at(i), newKey->pos[1] + 2.0f, stringEndpoints.at(i)});
                 } else {
                     //create a white key
                     Model* newKey = ModelFactory::fromAnchoredCuboid(whiteKeyWidth, keyHeight, keyDepth);
@@ -79,22 +68,37 @@ class Piano : public Object {
 
                     float x = -(keyboardWidth * 0.5f) + (whiteKeysAdded * whiteKeyWidth);
                     float y = 3.0f;
-
                     newKey->pos[0] = x;
                     newKey->pos[1] = y;
-                    _models.push_back(newKey);
 
-                    //create string
-                    Model* newString = ModelFactory::fromAnchoredCuboid(0.01f, 0.01f, -stringLengths.at(i));
-                    newString->setTextureHandle(gTextureHandles::WHITE_KEY);
-                    newString->pos[0] = x + (whiteKeyWidth * 0.5f);
-                    newString->pos[1] = y + 0.12f;
-                    newString->pos[2] = -1.0f;
-                    //_models.push_back(newString);
+                    _models.push_back(newKey);
+                    _strings.push_back({newKey->pos[0], newKey->pos[1] + 2.0f, newKey->pos[2], stringEndpoints.at(i), newKey->pos[1] + 2.0f, stringEndpoints.at(i)});
 
                     whiteKeysAdded += 1;
                 }
             }
+
+            Model* shellModel = ModelFactory::fromObj("./res/obj/pianoWithInside2.obj");
+            shellModel->setTextureHandle(gTextureHandles::PIANO_SHELL);
+            _models.push_back(shellModel);
+        }
+
+        void draw() override {
+            // Draw the strings
+            glDisable(GL_TEXTURE_2D);
+            glPushMatrix();
+            glTranslatef(pos[0], pos[1], pos[2]);
+            glBegin(GL_LINES);
+            for (size_t i = 0; i < _strings.size(); i++) {
+                glVertex3f(_strings.at(i)[0], _strings.at(i)[1], _strings.at(i)[2]);
+                glVertex3f(_strings.at(i)[3], _strings.at(i)[4], _strings.at(i)[5]);
+            }
+            glEnd();
+            glPopMatrix();
+            glEnable(GL_TEXTURE_2D);
+
+            // Draw the rest of the models under the infuence of the light
+            Object::draw();
         }
 };
 

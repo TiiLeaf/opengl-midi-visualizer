@@ -6,6 +6,7 @@
 #include "SDL2/SDL_opengl.h"
 
 #include "../helpers/openGlHelpers.cpp"
+#include "../classes/Model.hpp"
 
 #include <vector>
 #include <array>
@@ -472,6 +473,106 @@ public:
                 center,
                 0.5f, 0.5f,
                 0.1f, 1.0f, 0.0f
+            );
+        }
+
+        return createModelWithVertexData(vertexData);
+    }
+
+    static Model* fromTurrets(float r, float h) {
+        std::vector<float> vertexData;
+
+        const float twoPi = 6.2831855f;
+        const int res = 32;
+        const float outerRadius = r + 1.0f;
+
+        for (size_t i = 0; i < res; i++) {
+            float theta = i * twoPi / res;
+            float nextTheta = (i+1) * twoPi / res;
+
+            float r1 = r;
+            float r2 = r - 1.5f;
+            float v1 = 0.0f;
+            float v2 = 0.6f;
+            if (i % 2 == 0) {
+                r1 = r2;
+                r2 = r;
+                v1 = v2;
+                v2 = 0.0f;
+            }
+
+            float topLeftCorner[3] = { sin(theta) * r1, h, cos(theta) * r1 };
+            float topRightCorner[3] = { sin(nextTheta) * r2, h, cos(nextTheta) * r2 };
+            float bottomLeftCorner[3] = { sin(theta) * r1, 0, cos(theta) * r1 };
+            float bottomRightCorner[3] = { sin(nextTheta) * r2, 0, cos(nextTheta) * r2 };
+            float farLeftCorner[3] = { sin(theta) * outerRadius, h, cos(theta) * outerRadius };
+            float farRightCorner[3] = { sin(nextTheta) * outerRadius, h, cos(nextTheta) * outerRadius };
+
+            float normal[3];
+            computeNormal(normal, topLeftCorner, topRightCorner, bottomLeftCorner);
+            addVertexToData(vertexData,
+                topLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                normal[0], normal[1], normal[2] //normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                normal[0], normal[1], normal[2] //normal
+            );
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 0.0f, //u,v
+                normal[0], normal[1], normal[2] //normal
+            );
+
+            addVertexToData(vertexData,
+                bottomLeftCorner, //x,y,z
+                0.0f, 0.0f, //u,v
+                normal[0], normal[1], normal[2] //normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                normal[0], normal[1], normal[2] //normal
+            );
+            addVertexToData(vertexData,
+                bottomRightCorner, //x,y,z
+                1.0f, 0.0f, //u,v
+                normal[0], normal[1], normal[2] //normal
+            );
+
+
+            addVertexToData(vertexData,
+                topLeftCorner, //x,y,z
+                0.0f, v2, //u,v
+                0.0f, 1.0f, 0.0f //normal
+            );
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, v1, //u,v
+                0.0f, 1.0f, 0.0f //normal
+            );
+            addVertexToData(vertexData,
+                farLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                0.0f, 1.0f, 0.0f //normal
+            );
+
+            addVertexToData(vertexData,
+                topRightCorner, //x,y,z
+                1.0f, v1, //u,v
+                0.0f, 1.0f, 0.0f //normal
+            );
+            addVertexToData(vertexData,
+                farRightCorner, //x,y,z
+                1.0f, 1.0f, //u,v
+                0.0f, 1.0f, 0.0f //normal
+            );
+            addVertexToData(vertexData,
+                farLeftCorner, //x,y,z
+                0.0f, 1.0f, //u,v
+                0.0f, 1.0f, 0.0f //normal
             );
         }
 
