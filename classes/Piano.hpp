@@ -29,14 +29,14 @@ class Piano : public Object {
                 "C7", "C#7", "D7"
             };
 
-            std::vector<float> stringEndpoints = {
-                0,1, 0,1, 0,1, 
-                0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1,
-                0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1,
-                0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1,
-                0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1,
-                0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1, 0,1,
-                0,1, 0,1, 0,1
+            std::vector<float> stringLengths = {
+                7.2f, 7.2f, 7.2f, 
+                7.2f, 7.2f, 7.2f, 7.2f, 7.2f, 7.2f, 7.2f, 7.2f, 7.2f, 7.2f, 7.2f, 7.2f,
+                7.0f, 7.0f, 7.0f, 7.0f, 7.0f, 7.0f, 7.0f, 7.0f, 7.0f, 7.0f, 7.0f, 7.0f,
+                6.5f, 6.5f, 6.5f, 6.5f, 6.5f, 6.5f, 6.5f, 6.5f, 6.5f, 6.5f, 6.5f, 6.5f,
+                3.6f, 3.6f, 3.6f, 3.6f, 3.6f, 3.0f, 2.6f, 2.6f, 2.6f, 2.6f, 2.6f, 2.6f,
+                2.4f, 2.4f, 2.4f, 2.4f, 2.4f, 2.2f, 2.2f, 2.2f, 2.2f, 2.2f, 2.2f, 2.2f,
+                2.0f, 2.0f, 2.0f
             };
 
             //create the keys dynamically based on `pianoLayout`
@@ -58,9 +58,12 @@ class Piano : public Object {
                     float y = 3.08f;
                     newKey->pos[0] = x;
                     newKey->pos[1] = y;
-
                     _models.push_back(newKey);
-                    _strings.push_back({newKey->pos[0], newKey->pos[1] + 2.0f, newKey->pos[2], stringEndpoints.at(i), newKey->pos[1] + 2.0f, stringEndpoints.at(i)});
+
+                    float stringX = x + (blackKeyWidth * 0.5f);
+                    float stringY = y + 0.25f;
+                    float stringZ = -stringLengths.at(i);
+                    _strings.push_back({stringX, stringY, -0.5f, stringX, stringY, stringZ});
                 } else {
                     //create a white key
                     Model* newKey = ModelFactory::fromAnchoredCuboid(whiteKeyWidth, keyHeight, keyDepth);
@@ -70,15 +73,18 @@ class Piano : public Object {
                     float y = 3.0f;
                     newKey->pos[0] = x;
                     newKey->pos[1] = y;
-
                     _models.push_back(newKey);
-                    _strings.push_back({newKey->pos[0], newKey->pos[1] + 2.0f, newKey->pos[2], stringEndpoints.at(i), newKey->pos[1] + 2.0f, stringEndpoints.at(i)});
+
+                    float stringX = x + (whiteKeyWidth * 0.5f);
+                    float stringY = y + 0.25f;
+                    float stringZ = -stringLengths.at(i);
+                    _strings.push_back({stringX, stringY, -0.5f, stringX, stringY, stringZ});
 
                     whiteKeysAdded += 1;
                 }
             }
 
-            Model* shellModel = ModelFactory::fromObj("./res/obj/pianoWithInside2.obj");
+            Model* shellModel = ModelFactory::fromObj("./res/obj/pianoShell.obj");
             shellModel->setTextureHandle(gTextureHandles::PIANO_SHELL);
             _models.push_back(shellModel);
         }

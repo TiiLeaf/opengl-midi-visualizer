@@ -18,6 +18,7 @@
 #include "./classes/Object.hpp"
 #include "./classes/Piano.hpp"
 #include "./classes/Lamp.hpp"
+#include "./classes/Ground.hpp"
 
 //c++ libraries
 #include <vector>
@@ -57,32 +58,32 @@ std::vector<Object*> buildScene() {
 	gTextures[gTextureHandles::LAMP_POST] = loadBmpFile("./res/img/lampPost.bmp");
 	gTextures[gTextureHandles::LAMP_SHADE] = loadBmpFile("./res/img/lampShade.bmp");
 	gTextures[gTextureHandles::LAMP_LIGHT] = loadBmpFile("./res/img/lampLight.bmp");
-	gTextures[gTextureHandles::PIANO_SHELL] = loadBmpFile("./res/img/pianoWithInside.bmp");
+	gTextures[gTextureHandles::PIANO_SHELL] = loadBmpFile("./res/img/pianoShell.bmp");
 	gTextures[gTextureHandles::WHITE_KEY] = loadBmpFile("./res/img/whiteKey.bmp");
 	gTextures[gTextureHandles::BLACK_KEY] = loadBmpFile("./res/img/blackKey.bmp");
 	gTextures[gTextureHandles::SKYBOX_HOR] = loadBmpFile("./res/img/skyboxSideStars.bmp");
 	gTextures[gTextureHandles::FLOOR] = loadBmpFile("./res/img/floor.bmp");
-	gTextures[gTextureHandles::CEMENT] = loadBmpFile("./res/img/cement.bmp");
+	gTextures[gTextureHandles::CEMENT] = loadBmpFile("./res/img/cementBrick.bmp");
 
+	//create the skybox
 	skyBox = ModelFactory::fromSkybox();
 	skyBox->setTextureHandle(gTextureHandles::SKYBOX_HOR);
 
-	ground = ModelFactory::fromTurrets(12, 1); 
-	ground->setTextureHandle(gTextureHandles::CEMENT);
-
-	circle = ModelFactory::fromFloor(12);
-	circle->setTextureHandle(gTextureHandles::FLOOR);
-
+	//create the piano
 	Piano* piano = new Piano();
 	piano->pos[2] = 1.0f;
 	scene.push_back(piano);
 
+	//create the lamp
 	Lamp* lamp = new Lamp();
 	lamp->pos[0] = 6.5f;
 	lamp->pos[2] = 2.5f;
 	lightPosition[0] = lamp->pos[0];
 	lightPosition[2] = lamp->pos[2];
 	scene.push_back(lamp);
+
+	//create the ground
+	scene.push_back(new Ground());
 
 	return scene;
 }
@@ -139,8 +140,6 @@ void draw(std::vector<Object*> scene) {
 	for (size_t i = 0; i < scene.size(); i++) {
 		scene.at(i)->draw();
 	}
-	ground->draw();
-	circle->draw();
 }
 
 //
@@ -188,8 +187,6 @@ int main(int argc, char* argv[]) {
 
 	//cleanup scene objects
 	delete skyBox;
-	delete ground;
-	delete circle;
 	for (size_t i = 0; i < scene.size(); i++) {
 		delete scene.at(i);
 	}
