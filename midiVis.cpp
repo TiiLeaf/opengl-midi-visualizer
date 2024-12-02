@@ -19,6 +19,7 @@
 #include "./classes/Piano.hpp"
 #include "./classes/Lamp.hpp"
 #include "./classes/Ground.hpp"
+#include "./classes/Song.hpp"
 
 //c++ libraries
 #include <vector>
@@ -38,10 +39,9 @@ unsigned int gTextures[gNumTextures];
 Camera gCamera(0, 7, 10);
 
 //all file globals go here and should never be used elsewhere
+Song song;
 float lightPosition[4]  = {0.0f, 7.0f, 0.0f, 1.0f};
 Model* skyBox;
-Model* ground;
-Model* circle;
 
 //
 // UPDATE AND DRAW SCENE
@@ -84,6 +84,9 @@ std::vector<Object*> buildScene() {
 
 	//create the ground
 	scene.push_back(new Ground());
+
+	//add the notes to the song
+	song.addNotesFromCsv("./res/song/skyReprise.csv", piano);
 
 	return scene;
 }

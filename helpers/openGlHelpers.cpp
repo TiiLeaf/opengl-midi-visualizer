@@ -2,6 +2,7 @@
 #define OPENGL_HELPERS_CPP
 
 #include <vector>
+#include <string>
 
 void drawAxes() {
     glBegin(GL_LINES);
@@ -44,6 +45,14 @@ std::vector<std::string> split(std::string line, std::string delimiter) {
    result.push_back(line);
 
    return result;
+}
+
+template <typename T> int indexOf(std::vector<T> vec, T val) {
+   for (size_t i = 0; i < vec.size(); i++) {
+      if (vec.at(i) == val)
+         return (int)i;
+   }
+   return -1;
 }
 
 void reverse(void* x, const int n) {

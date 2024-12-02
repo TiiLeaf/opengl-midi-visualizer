@@ -16,19 +16,21 @@
 class Piano : public Object {
     private:
         std::vector<std::array<float, 6>> _strings;
+        float _blackKeyWidth;
+        float _whiteKeyWidth;
+
+        std::vector<std::string> _pianoLayout = {
+            "A1", "A#1", "B1",
+            "C2", "C#2", "D2", "D#2", "E2", "F2", "F#2", "G2", "G#2", "A2", "A#2", "B2",
+            "C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3",
+            "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4",
+            "C5", "C#5", "D5", "D#5", "E5", "F5", "F#5", "G5", "G#5", "A5", "A#5", "B5",
+            "C6", "C#6", "D6", "D#6", "E6", "F6", "F#6", "G6", "G#6", "A6", "A#6", "B6",
+            "C7", "C#7", "D7"
+        };
 
     public:
         Piano() {
-            std::vector<std::string> pianoLayout = {
-                "A1", "A#1", "B1",
-                "C2", "C#2", "D2", "D#2", "E2", "F2", "F#2", "G2", "G#2", "A2", "A#2", "B2",
-                "C3", "C#3", "D3", "D#3", "E3", "F3", "F#3", "G3", "G#3", "A3", "A#3", "B3",
-                "C4", "C#4", "D4", "D#4", "E4", "F4", "F#4", "G4", "G#4", "A4", "A#4", "B4",
-                "C5", "C#5", "D5", "D#5", "E5", "F5", "F#5", "G5", "G#5", "A5", "A#5", "B5",
-                "C6", "C#6", "D6", "D#6", "E6", "F6", "F#6", "G6", "G#6", "A6", "A#6", "B6",
-                "C7", "C#7", "D7"
-            };
-
             std::vector<float> stringLengths = {
                 7.2f, 7.2f, 7.2f, 
                 7.2f, 7.2f, 7.2f, 7.2f, 7.2f, 7.2f, 7.2f, 7.2f, 7.2f, 7.2f, 7.2f, 7.2f,
@@ -39,17 +41,19 @@ class Piano : public Object {
                 2.0f, 2.0f, 2.0f
             };
 
-            //create the keys dynamically based on `pianoLayout`
+            //create the keys dynamically based on `_pianoLayout`
             const float keyboardWidth = 8.0f;
-            const size_t keyCount = pianoLayout.size();
+            const size_t keyCount = _pianoLayout.size();
             const float whiteKeyWidth = keyboardWidth / (keyCount - 27);
             const float blackKeyWidth = whiteKeyWidth * 0.66;
+            _blackKeyWidth = blackKeyWidth;
+            _whiteKeyWidth = whiteKeyWidth;
             const float keyHeight = 0.18f;
             const float keyDepth = 0.8f;
             
             int whiteKeysAdded = 0;
             for (size_t i = 0; i < keyCount; i++) {
-                if (pianoLayout.at(i).find('#') != std::string::npos) {
+                if (_pianoLayout.at(i).find('#') != std::string::npos) {
                     //create a black key
                     Model* newKey = ModelFactory::fromBlackKey(blackKeyWidth, keyHeight, keyDepth - 0.15f, 0.15f);
                     newKey->setTextureHandle(gTextureHandles::BLACK_KEY);
@@ -106,6 +110,28 @@ class Piano : public Object {
             // Draw the rest of the models under the infuence of the light
             Object::draw();
         }
+
+        std::vector<std::string> getLayout() {
+            return _pianoLayout;
+        }
+
+        float getBlackKeyWidth() {
+            return _blackKeyWidth;
+        }
+
+        float getWhiteKeyWidth() {
+            return _whiteKeyWidth;
+        }
+
+        float getKeyX(std::string noteName) {
+            for (size_t i = 0; i < _pianoLayout.size(); i++) {
+                if (_pianoLayout.at(i) == noteName) {
+                    return _models.at(i)->pos[0];
+                }
+            }
+            return -99.9f;
+        }
+
 };
 
 #endif
