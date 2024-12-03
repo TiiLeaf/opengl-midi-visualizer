@@ -34,7 +34,7 @@
 SDL_Window* gWindow = nullptr;
 bool gShouldExit = false;
 SDL_GLContext gCtx = nullptr;
-const unsigned short gNumTextures = 10;
+const unsigned short gNumTextures = 12;
 unsigned int gTextures[gNumTextures];
 Camera gCamera(0, 7, 10);
 
@@ -64,6 +64,7 @@ std::vector<Object*> buildScene() {
 	gTextures[gTextureHandles::SKYBOX_HOR] = loadBmpFile("./res/img/skyboxSideStars.bmp");
 	gTextures[gTextureHandles::FLOOR] = loadBmpFile("./res/img/floor.bmp");
 	gTextures[gTextureHandles::CEMENT] = loadBmpFile("./res/img/cementBrick.bmp");
+	gTextures[gTextureHandles::NOTE] = loadBmpFile("./res/img/note.bmp");
 
 	//create the skybox
 	skyBox = ModelFactory::fromSkybox();
@@ -95,8 +96,9 @@ std::vector<Object*> buildScene() {
 	Update the scene before it is drawn.
 */
 void update(std::vector<Object*> scene, double deltaTime) {
+	song.update(deltaTime);
 	for (size_t i = 0; i < scene.size(); i++) {
-		scene.at(i)->update(deltaTime);
+		scene.at(i)->update(deltaTime, song.getNoteStatuses());
 	}
 }
 
@@ -111,6 +113,7 @@ void draw(std::vector<Object*> scene) {
 	//enable textures
     glEnable(GL_TEXTURE_2D);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glColor3f(1.0f, 1.0f, 1.0f);
 
 	//reset transformations
 	glLoadIdentity();
@@ -129,7 +132,7 @@ void draw(std::vector<Object*> scene) {
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_LIGHTING);
 
-    float ambient[]   = {0.175f, 0.175f, 0.175f, 1.0f};
+    float ambient[]   = {0.16f, 0.16f, 0.16f, 1.0f};
     float diffuse[]   = {0.9f, 0.9f, 0.9f, 1.0f};
     float specular[]  = {0.0f, 0.0f, 0.0f, 1.0f};
 
@@ -143,6 +146,10 @@ void draw(std::vector<Object*> scene) {
 	for (size_t i = 0; i < scene.size(); i++) {
 		scene.at(i)->draw();
 	}
+
+	//draw the song's notes
+	glDisable(GL_LIGHTING);
+	song.draw();
 }
 
 //

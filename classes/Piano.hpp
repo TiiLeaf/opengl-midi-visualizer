@@ -18,6 +18,7 @@ class Piano : public Object {
         std::vector<std::array<float, 6>> _strings;
         float _blackKeyWidth;
         float _whiteKeyWidth;
+        std::vector<int> _noteStatuses;
 
         std::vector<std::string> _pianoLayout = {
             "A1", "A#1", "B1",
@@ -93,22 +94,36 @@ class Piano : public Object {
             _models.push_back(shellModel);
         }
 
+        void update(double deltaTime, std::vector<int> noteStatuses) override {
+            _noteStatuses = noteStatuses;
+        }
+
         void draw() override {
-            // Draw the strings
-            glDisable(GL_TEXTURE_2D);
             glPushMatrix();
             glTranslatef(pos[0], pos[1], pos[2]);
+            
+            // Draw the strings without textures
+            glDisable(GL_TEXTURE_2D);
             glBegin(GL_LINES);
             for (size_t i = 0; i < _strings.size(); i++) {
                 glVertex3f(_strings.at(i)[0], _strings.at(i)[1], _strings.at(i)[2]);
                 glVertex3f(_strings.at(i)[3], _strings.at(i)[4], _strings.at(i)[5]);
             }
             glEnd();
-            glPopMatrix();
             glEnable(GL_TEXTURE_2D);
 
-            // Draw the rest of the models under the infuence of the light
-            Object::draw();
+            for (size_t i = 0; i < _models.size(); i++) {
+                /*if (_noteStatuses.at(i) == 1) {
+                    glPushMatrix();
+                    glTranslatef(0.0f, -0.09f, 0.0f);
+                    _models.at(i)->draw();
+                     glPopMatrix();
+                } else {*/
+                    _models.at(i)->draw();
+                //}
+            }
+
+            glPopMatrix();
         }
 
         std::vector<std::string> getLayout() {

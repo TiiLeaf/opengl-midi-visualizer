@@ -26,7 +26,7 @@ class Object {
             glPopMatrix();
         }
 
-        virtual void update(float deltaTime) {}
+        virtual void update(double deltaTime, std::vector<int> noteStatuses) {}
 };
 
 #endif

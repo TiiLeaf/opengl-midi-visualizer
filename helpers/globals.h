@@ -20,7 +20,8 @@ enum gTextureHandles {
 	LAMP_LIGHT,
 	SKYBOX_HOR,
 	FLOOR,
-	CEMENT
+	CEMENT,
+	NOTE,
 };
 
 #endif

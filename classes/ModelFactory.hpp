@@ -379,6 +379,57 @@ public:
         return createModelWithVertexData(vertexData);
     }
 
+static Model* fromNote(float w, float h, float d) {
+        float a = 0.027f;
+
+        std::vector<float> cuboidVertexData = {
+            w - a, h, a, 1.0f, 1.0f,  0.0f,  0.0f, -1.0f,
+            w, 0, 0, 1.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+            0, 0, 0, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+            0, 0, 0, 0.0f, 0.0f,  0.0f,  0.0f, -1.0f,
+            a, h, a, 0.0f, 1.0f,  0.0f,  0.0f, -1.0f,
+            w - a, h, a, 1.0f, 1.0f,  0.0f,  0.0f, -1.0f,
+
+            0, 0, d, 0.0f, 0.0f,  0.0f,  0.0f,  1.0f,
+            w, 0, d, 1.0f, 0.0f,  0.0f,  0.0f,  1.0f,
+            w - a, h, d - a, 1.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+            w - a, h, d - a, 1.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+            a, h, d - a, 0.0f, 1.0f,  0.0f,  0.0f,  1.0f,
+            0, 0, d, 0.0f, 0.0f,  0.0f,  0.0f,  1.0f,
+
+            a, h, d - a, 1.0f, 1.0f, -1.0f,  0.0f,  0.0f,
+            a, h, a, 1.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+            0, 0, 0, 0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+            0, 0, 0, 0.0f, 0.0f, -1.0f,  0.0f,  0.0f,
+            0, 0, d, 0.0f, 1.0f, -1.0f,  0.0f,  0.0f,
+            a, h, d - a, 1.0f, 1.0f, -1.0f,  0.0f,  0.0f,
+
+            w, 0, 0, 0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+            w - a, h, a, 1.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+            w - a, h, d - a, 1.0f, 1.0f,  1.0f,  0.0f,  0.0f,
+            w - a, h, d - a, 1.0f, 1.0f,  1.0f,  0.0f,  0.0f,
+            w, 0, d, 0.0f, 1.0f,  1.0f,  0.0f,  0.0f,
+            w, 0, 0, 0.0f, 0.0f,  1.0f,  0.0f,  0.0f,
+
+            0, 0, 0, 0.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+            w, 0, 0, 1.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+            w, 0, d, 1.0f, 1.0f,  0.0f, -1.0f,  0.0f,
+            w, 0, d, 1.0f, 1.0f,  0.0f, -1.0f,  0.0f,
+            0, 0, d, 0.0f, 1.0f,  0.0f, -1.0f,  0.0f,
+            0, 0, 0, 0.0f, 0.0f,  0.0f, -1.0f,  0.0f,
+
+
+            w - a, h, d - a, 1.0f, 1.0f,  0.0f,  1.0f,  0.0f,
+            w - a, h, a, 1.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+            a, h, a, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+            a, h, a, 0.0f, 0.0f,  0.0f,  1.0f,  0.0f,
+            a, h, d - a, 0.0f, 1.0f,  0.0f,  1.0f,  0.0f,
+            w - a, h, d -a, 1.0f, 1.0f,  0.0f,  1.0f,  0.0f
+        };
+
+        return createModelWithVertexData(cuboidVertexData);
+    }
+
     static Model* fromLampPost(float baseRadius, float baseHeight, float postRadius, float postHeight) {
         std::vector<float> vertexData;
         std::vector<float> baseVertexData = createCylinderVertexData(6, baseRadius, baseRadius, 0, baseHeight, false, 0, true, baseHeight * 2);
